@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\AdminController;
+use App\Http\Controllers\Admin\DistributorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +29,5 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::post('/login', [AdminLoginController::class, 'login'])->name('login.submit');
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/logout', [AdminLoginController::class, 'logout'])->name('logout');
+    Route::resource('/distributor', DistributorController::class);
 });

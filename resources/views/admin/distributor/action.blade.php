@@ -1,0 +1,2 @@
+<a href="{{ route('admin.distributor.edit', $id) }}"><button type="button" class="btn btn-warning waves-effect">Edit</button></a>
+<a href="{{ route('admin.distributor.show', $id) }}"><button type="button" class="btn btn-primary waves-effect">Profile</button></a>

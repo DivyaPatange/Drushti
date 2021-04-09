@@ -24,18 +24,17 @@
 <script src="{{ asset('adminAsset/plugins/chartjs/Chart.bundle.js') }}"></script>
 
 <!-- Flot Charts Plugin Js -->
-<script src="{{ asset('adminAsset/plugins/flot-charts/jquery.flot.js') }}"></script>
+<!-- <script src="{{ asset('adminAsset/plugins/flot-charts/jquery.flot.js') }}"></script>
 <script src="{{ asset('adminAsset/plugins/flot-charts/jquery.flot.resize.js') }}"></script>
 <script src="{{ asset('adminAsset/plugins/flot-charts/jquery.flot.pie.js') }}"></script>
 <script src="{{ asset('adminAsset/plugins/flot-charts/jquery.flot.categories.js') }}"></script>
-<script src="{{ asset('adminAsset/plugins/flot-charts/jquery.flot.time.js') }}"></script>
+<script src="{{ asset('adminAsset/plugins/flot-charts/jquery.flot.time.js') }}"></script> -->
 
 <!-- Sparkline Chart Plugin Js -->
 <script src="{{ asset('adminAsset/plugins/jquery-sparkline/jquery.sparkline.js') }}"></script>
 
 <!-- Custom Js -->
-<script src="{{ asset('adminAsset/js/admin.js') }}"></script>
-<script src="{{ asset('adminAsset/js/pages/index.js') }}"></script>
+<!-- <script src="{{ asset('adminAsset/js/pages/index.js') }}"></script> -->
 
 <!-- Demo Js -->
 <script src="{{ asset('adminAsset/js/demo.js') }}"></script>
