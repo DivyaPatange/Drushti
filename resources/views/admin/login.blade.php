@@ -25,7 +25,7 @@
     <link href="{{ asset('adminAsset/css/style.css') }}" rel="stylesheet">
 </head>
 
-<body class="login-page">
+<body class="login-page" style="background-color:#3F51B5;">
     <div class="row">
         <div class="col-md-12">
             @if ($message = Session::get('success'))

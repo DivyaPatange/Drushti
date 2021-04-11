@@ -1,9 +1,9 @@
-<nav class="navbar" style="background-color:#3F51B5;">
+<nav class="navbar" style="background-color:#00BCD4;">
     <div class="container-fluid">
         <div class="navbar-header">
             <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
             <a href="javascript:void(0);" class="bars"></a>
-            <a class="navbar-brand" href="{{ url('/admin') }}">Marketdrushti</a>
+            <a class="navbar-brand" href="{{ url('/distributor') }}">Marketdrushti</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -122,10 +122,10 @@
                 <!-- Tasks -->
                 <li class="dropdown">
                     <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
-                        {{ Auth::guard('admin')->user()->name }}
+                        {{ Auth::user()->fullname }} ({{ Auth::user()->username }})
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="header">Welcome {{ Auth::guard('admin')->user()->name }}!</li>
+                        <li class="header">Welcome {{ Auth::user()->fullname }}!</li>
                         <li class="body">
                             <ul class="menu tasks">
                                 <li>
@@ -139,7 +139,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('admin.logout') }}">
+                                    <a href="{{ route('distributor.logout') }}">
                                         <h4>Logout</h4>
                                     </a>
                                 </li>

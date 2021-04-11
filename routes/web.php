@@ -17,8 +17,8 @@ use App\Http\Controllers\Admin\DistributorController;
 */
 
 Route::get('/', function () {
-    return view('admin.login');
-})->name('admin.login');
+    return view('distributor.login');
+});
 
 Auth::routes();
 
@@ -30,4 +30,18 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/logout', [AdminLoginController::class, 'logout'])->name('logout');
     Route::resource('/distributor', DistributorController::class);
+});
+
+Route::prefix('admin')->name('admin.')->group(function() {
+    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AdminLoginController::class, 'login'])->name('login.submit');
+    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/logout', [AdminLoginController::class, 'logout'])->name('logout');
+    Route::resource('/distributor', DistributorController::class);
+});
+
+Route::prefix('distributor')->name('distributor.')->group(function() {
+    Route::get('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+    Route::resource('/joiners', App\Http\Controllers\Distributor\DistributorController::class);
+    Route::get('/search', [App\Http\Controllers\Distributor\DistributorController::class, 'search'])->name('search');
 });
