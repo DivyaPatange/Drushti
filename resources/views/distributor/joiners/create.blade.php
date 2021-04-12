@@ -12,7 +12,7 @@
                 <h2>Add Joiner</h2>
             </div>
             <div class="body">
-                <form method="POST" action="{{ route('admin.distributor.store') }}">
+                <form method="POST" action="{{ route('distributor.joiners.store') }}">
                 @csrf
                     <div class="row clearfix">
                         <div class="col-sm-6">

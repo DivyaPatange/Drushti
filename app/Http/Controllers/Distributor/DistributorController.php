@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Distributor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DB;
 use Auth;
 use App\Models\User;
-
+use App\Models\Admin\UserInfo;
+use App\Models\Admin\UserBankDetail;
+use App\Models\Admin\UserKycDetail;
+use Illuminate\Support\Facades\Hash;
+use DB;
 class DistributorController extends Controller
 {
     /**
@@ -50,7 +53,76 @@ class DistributorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_referral' => 'required',
+            'fullname' => 'required',
+            'mobile_no' => 'required|digits:10',
+            'address' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+        $id = mt_rand(10000000,99999999);
+        $user_referral_info = $request->user_referral;
+        $data = User::where('referral_code',$user_referral_info )->first();
+        $users = User::where('parent_id', $data->id)->get();
+        if(count($users) < 10){
+        // output: 160001
+        $user = User::create([
+            'id' => $id,
+            'fullname' => $request->fullname,
+            'email' => $request->email,
+            'username' => "MKD".$id,
+            'mobile' => $request->mobile_no,
+            'address' => $request->address,
+            'password' => Hash::make($request->password),
+            'password_1' => $request->password,
+            'referral_code' => "MKD".$id,
+            'reg_date' => date("Y-m-d"),
+        ]);
+        // dd($user);
+        $node = User::find($data->id);
+        $node->appendNode($user);
+
+        $usersInfo = new UserInfo();
+        $usersInfo->user_id = $id;
+        $usersInfo->nominee_name = $request->nominee_name;
+        $usersInfo->nominee_relation = $request->nominee_relation;
+        $usersInfo->save();
+
+        $kycdetails = new UserKycDetail();
+
+        $kycdetails->user_id = $id;
+        $kycdetails->pan_no = $request->pan_no;
+        $kycdetails->aadhar_no = $request->aadhar_no;
+        $kycdetails->save();
+        
+        $bankdetails = new UserBankDetail();
+        $bankdetails->user_id = $id;
+        $bankdetails->bank_name = $request->bank_name;
+        $bankdetails->branch_name = $request->branch_name;
+        $bankdetails->ifsc_code = $request->ifsc_code;
+        $bankdetails->acc_no = $request->acc_no;
+        $bankdetails->acc_holder_name = $request->acc_holder_name;
+        $bankdetails->save();
+
+            if($user->save()){
+            $message = "Hello+".urlencode($request->fullname)."%0aWelcome+to+Marketdrushti+"."%0aYour+Distributer+account+credentials+are+as+follows:%0aUsername:-+".$username."%0aPassword:-+".$request->password."%0aYou+can+login+to+your+distributer+account+here%0ahttp://shop.marketdrushti.com/login/";
+                        
+            $number = $request->mobile;
+
+            // $this->sendSms($message,$number);
+            // dd($this->sendSms($message,$number));
+            return redirect('/distributor/joiners')->with([
+                'user' => $user,
+                'kycdetails' => $kycdetails,
+                'bankdetails' => $bankdetails,
+                'usersInfo' => $usersInfo,
+            ])->with('success', 'Joiner Added Successfully!');
+            }  
+        }
+        else{
+            
+            return Redirect::back()->with('danger', 'You cannot add more than 10 joiners.');
+        }
     }
 
     /**

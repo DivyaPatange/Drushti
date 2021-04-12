@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Kalnoy\Nestedset\NestedSet;
 
 class CreateUsersTable extends Migration
 {
@@ -19,12 +20,12 @@ class CreateUsersTable extends Migration
             $table->string('username');
             $table->string('mobile');
             $table->string('email')->nullable();
-            $table->string('parent_id');
             $table->string('referral_code');
             $table->string('address');
             $table->string('password');
             $table->string('password_1');
             $table->date('reg_date');
+            $table->nestedSet();
             $table->rememberToken();
             $table->timestamps();
         });
