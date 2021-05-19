@@ -2,8 +2,29 @@
 @section('title', 'Add Joiner')
 @section('page_title', 'Add Joiner')
 @section('customcss')
+<style>
+.error{
+    color:red;
+}
+</style>
 @endsection
 @section('content')
+<div class="row clearfix">
+    <div class="col-md-12">
+        @if ($message = Session::get('success'))
+        <div class="alert alert-success alert-block">
+            <button type="button" class="close" data-dismiss="alert">×</button>	
+                <strong>{{ $message }}</strong>
+        </div>
+        @endif
+        @if ($message = Session::get('danger'))
+        <div class="alert alert-danger alert-block">
+            <button type="button" class="close" data-dismiss="alert">×</button>	
+                <strong>{{ $message }}</strong>
+        </div>
+        @endif
+    </div>
+</div>
 <!-- Exportable Table -->
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -30,6 +51,25 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <h3 id="referral_name"></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" name="sponsor_id" class="form-control @error('sponsor_id') is-invalid @enderror" id="sponsor_id" placeholder="Enter Sponsor ID" value="{{ old('sponsor_id') }}"/>
+                                </div>
+                                @error('sponsor_id')
+                                    <span class="invalid-feedback error" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 id="sponsor_name"></h3>
                             </div>
                         </div>
                     </div>
@@ -89,8 +129,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-6">
+                            <div class="demo-radio-button">
+                                <input type="radio" id="radio_30" name="join_side" value="L" class="with-gap radio-col-red" @if(old('join_side') == "L") checked @endif/>
+                                <label for="radio_30">Left Join</label>
+                                <input type="radio" id="radio_31" name="join_side" value="R" class="with-gap radio-col-pink" @if(old('join_side') == "R") checked @endif/>
+                                <label for="radio_31">Right Join</label>
+                            </div>
+                            @error('join_side')
+                                <span class="invalid-feedback error" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
                         <div class="col-sm-12">
-                        <input type="hidden" name="parent_id" value="0">
                         <button type="submit" class="btn btn-primary waves-effect ">Submit</button>
                         </div>
                     </div>
@@ -122,6 +174,29 @@ $(document).ready(function () {
             success:function (data) {
                 // print the search results in the div called country_list(id)
                 $('#referral_name').html(data);
+            }
+        })
+        // end of ajax call
+    });
+})
+
+$(document).ready(function () {
+    // keyup function looks at the keys typed on the search box
+    $('#sponsor_id').on('keyup',function() {
+        // the text typed in the input field is assigned to a variable 
+        var query = $(this).val();
+        // call to an ajax function
+        $.ajax({
+            // assign a controller function to perform search action - route name is search
+            url:"{{ route('distributor.search') }}",
+            // since we are getting data methos is assigned as GET
+            type:"GET",
+            // data are sent the server
+            data:{'user_referral_info':query},
+            // if search is succcessfully done, this callback function is called
+            success:function (data) {
+                // print the search results in the div called country_list(id)
+                $('#sponsor_name').html(data);
             }
         })
         // end of ajax call

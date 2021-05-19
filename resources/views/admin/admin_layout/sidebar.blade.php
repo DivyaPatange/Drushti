@@ -35,9 +35,9 @@
                 </a>
             </li>
             <li>
-                <a href="pages/helper-classes.html">
+                <a href="{{ route('admin.company-tree') }}">
                     <i class="material-icons">layers</i>
-                    <span>Helper Classes</span>
+                    <span>Company Tree</span>
                 </a>
             </li>
             <li>

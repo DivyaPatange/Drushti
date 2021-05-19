@@ -134,8 +134,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:void(0);">
-                                        <h4>Settings</h4>
+                                    <a href="{{ route('distributor.change-password.index') }}">
+                                        <h4>Change Password</h4>
                                     </a>
                                 </li>
                                 <li>

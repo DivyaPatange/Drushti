@@ -68,14 +68,14 @@ class DistributorController extends Controller
         $user->id = $id;
         $user->fullname = $request->fullname;
         $user->email = $request->email;
-        $username = "MKD".$user->id;
+        $username = "MCP".$user->id;
         $user->username = $username;
         $user->mobile = $request->mobile_no;
         $user->address = $request->address;
         $user->password = Hash::make($password);
         $user->password_1 = $password;
         $user->parent_id = $request->parent_id;
-        $user->referral_code = "MKD".$user->id;
+        $user->referral_code = "MCP".$user->id;
         $user->reg_date = date('Y-m-d');
         $user->save();
 
@@ -100,6 +100,21 @@ class DistributorController extends Controller
         $bankdetails->acc_no = $request->acc_no;
         $bankdetails->acc_holder_name = $request->acc_holder_name;
         $bankdetails->save();
+
+        for($i=1; $i <=5; $i++)
+        {
+            $user = new User();
+            $user->parent_id = $id;
+            $user->index = $i;
+            $user->save();
+        }
+        for($i=6; $i <=10; $i++)
+        {
+            $user = new User();
+            $user->parent_id = $id;
+            $user->index = $i;
+            $user->save();
+        }
         
         if($user->save()){
             $message = "Hello+".urlencode($request->fullname)."%0aWelcome+to+Market+Drushti+"."%0aYour+Distributer+account+credentials+are+as+follows:%0aUsername:-+".$username."%0aPassword:-+".$password."%0aYou+can+login+to+your+distributer+account+here%0ahttp://shop.marketdrushti.com/login/";
@@ -202,5 +217,12 @@ class DistributorController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function companyTree()
+    {
+        $users = User::where('parent_id', '=', 0)->get();
+        $allMenus = User::pluck('fullname', 'referral_code','id', 'index')->all();
+        return view('admin.company-tree.index', compact('users', 'allMenus'));
     }
 }

@@ -35,17 +35,20 @@
                 </a>
             </li>
             <li>
-                <a href="pages/helper-classes.html">
+                <a href="{{ route('distributor.treeview') }}">
                     <i class="material-icons">layers</i>
-                    <span>Helper Classes</span>
+                    <span>My Tree</span>
                 </a>
             </li>
+            <?php 
+                $id = Auth::user()->id;
+            ?>
             <li>
-                <a href="javascript:void(0);" class="menu-toggle">
+                <a href="{{ route('distributor.joiners.edit', $id) }}">
                     <i class="material-icons">widgets</i>
-                    <span>Widgets</span>
+                    <span>Edit Profile</span>
                 </a>
-                <ul class="ml-menu">
+                <!-- <ul class="ml-menu">
                     <li>
                         <a href="javascript:void(0);" class="menu-toggle">
                             <span>Cards</span>
@@ -84,14 +87,14 @@
                             </li>
                         </ul>
                     </li>
-                </ul>
+                </ul> -->
             </li>
             <li>
-                <a href="javascript:void(0);" class="menu-toggle">
+                <a href="{{ route('distributor.kyc-document') }}">
                     <i class="material-icons">swap_calls</i>
-                    <span>User Interface (UI)</span>
+                    <span>KYC Document</span>
                 </a>
-                <ul class="ml-menu">
+                <!-- <ul class="ml-menu">
                     <li>
                         <a href="pages/ui/alerts.html">Alerts</a>
                     </li>
@@ -162,7 +165,7 @@
                     <li>
                         <a href="pages/ui/waves.html">Waves</a>
                     </li>
-                </ul>
+                </ul> -->
             </li>
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
