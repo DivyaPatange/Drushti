@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Admin\DistributorController;
+use App\Http\Controllers\Distributor\ChangePasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,10 +39,15 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/logout', [AdminLoginController::class, 'logout'])->name('logout');
     Route::resource('/distributor', DistributorController::class);
+    Route::get('company-tree', [DistributorController::class, 'companyTree'])->name('company-tree');
 });
 
 Route::prefix('distributor')->name('distributor.')->group(function() {
     Route::get('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
     Route::resource('/joiners', App\Http\Controllers\Distributor\DistributorController::class);
     Route::get('/search', [App\Http\Controllers\Distributor\DistributorController::class, 'search'])->name('search');
+    Route::get('/treeview', [App\Http\Controllers\Distributor\DistributorController::class, 'treeview'])->name('treeview');
+    Route::resource('/change-password', ChangePasswordController::class);
+    Route::get('/kyc-document', [App\Http\Controllers\Distributor\DistributorController::class, 'kycDocument'])->name('kyc-document');
+    Route::post('/kyc-document/upload', [App\Http\Controllers\Distributor\DistributorController::class, 'uploadKycDocument'])->name('kyc-document.upload');
 });
