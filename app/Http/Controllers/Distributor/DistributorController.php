@@ -12,6 +12,12 @@ use App\Models\Admin\UserKycDetail;
 use Illuminate\Support\Facades\Hash;
 use DB;
 use Redirect;
+use App\Models\Franchise\ProductPayment;
+use App\Models\User\UserIncome;
+use App\Models\User\UserSalary;
+use App\Models\User\Reward;
+use App\Models\Admin\UserWallet;
+use App\Models\Franchise\AdminPayment;
 
 class DistributorController extends Controller
 {
@@ -71,55 +77,93 @@ class DistributorController extends Controller
         $id = mt_rand(10000000,99999999);
         $user_referral_info = $request->user_referral;
         $data = User::where('referral_code',$user_referral_info )->first();
-        $users = User::where('parent_id', $data->id)->select('id')->get();
+        $users = User::where('parent_id', $data->id)->where('id', '!=', null)->get();
         // dd($users);
-        if(count($users) < 11){
+        if(count($users) < 10){
             $sponsorUser = User::where('referral_code', $request->sponsor_id)->first();
             if($sponsorUser->id == $data->id)
             {
                 if($request->join_side == "L"){
                     $checkeUser = User::where('parent_id', $data->id)->where('index', 5)->first();
                     // dd($checkeUser->id == null);
-                    if($checkeUser->id == null)
+                    if(!empty($checkeUser))
                     {
-                        $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', 5)
-                        ->update([
+                        if($checkeUser->id == null)
+                        {
+                            $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', 5)
+                            ->update([
+                                'id' => $id,
+                                'fullname' => $request->fullname,
+                                'email' => $request->email,
+                                'username' => "MCP".$id,
+                                'mobile' => $request->mobile_no,
+                                'address' => $request->address,
+                                'password' => Hash::make($request->password),
+                                'password_1' => $request->password,
+                                'referral_code' => "MCP".$id,
+                                'reg_date' => date("Y-m-d"),
+                            ]);
+                        }
+                        else{
+                            return Redirect::back()->with('danger', 'Joiner Already Exist!');
+                        }
+                    }
+                    else{
+                        $user = User::create([
                             'id' => $id,
                             'fullname' => $request->fullname,
                             'email' => $request->email,
-                            'username' => "MKP".$id,
+                            'username' => "MCP".$id,
                             'mobile' => $request->mobile_no,
                             'address' => $request->address,
                             'password' => Hash::make($request->password),
                             'password_1' => $request->password,
                             'referral_code' => "MCP".$id,
                             'reg_date' => date("Y-m-d"),
+                            'index' => 5,
+                            'parent_id' => $data->id,
                         ]);
-                    }
-                    else{
-                        return Redirect::back()->with('danger', 'Joiner Already Exist!');
                     }
                 }
                 else{
                     $checkeUser = User::where('parent_id', $data->id)->where('index', 6)->first();
-                    if($checkeUser->id == null)
+                    if(!empty($checkeUser))
                     {
-                        $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', 6)
-                        ->update([
+                        if($checkeUser->id == null)
+                        {
+                            $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', 6)
+                            ->update([
+                                'id' => $id,
+                                'fullname' => $request->fullname,
+                                'email' => $request->email,
+                                'username' => "MCP".$id,
+                                'mobile' => $request->mobile_no,
+                                'address' => $request->address,
+                                'password' => Hash::make($request->password),
+                                'password_1' => $request->password,
+                                'referral_code' => "MCP".$id,
+                                'reg_date' => date("Y-m-d"),
+                            ]);
+                        }
+                        else{
+                            return Redirect::back()->with('danger', 'Joiner Already Exist!');
+                        }
+                    }
+                    else{
+                        $user = User::create([
                             'id' => $id,
                             'fullname' => $request->fullname,
                             'email' => $request->email,
-                            'username' => "MKP".$id,
+                            'username' => "MCP".$id,
                             'mobile' => $request->mobile_no,
                             'address' => $request->address,
                             'password' => Hash::make($request->password),
                             'password_1' => $request->password,
                             'referral_code' => "MCP".$id,
                             'reg_date' => date("Y-m-d"),
+                            'index' => 6,
+                            'parent_id' => $data->id,
                         ]);
-                    }
-                    else{
-                        return Redirect::back()->with('danger', 'Joiner Already Exist!');
                     }
                 }
             }
@@ -128,48 +172,86 @@ class DistributorController extends Controller
                 {
                     $index = $sponsorUser->index - 1;
                     $checkeUser = User::where('parent_id', $data->id)->where('index', $index)->first();
-                    if($checkeUser->id == null)
+                    if(!empty($checkeUser))
                     {
-                        $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', $index)
-                        ->update([
+                        if($checkeUser->id == null)
+                        {
+                            $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', $index)
+                            ->update([
+                                'id' => $id,
+                                'fullname' => $request->fullname,
+                                'email' => $request->email,
+                                'username' => "MCP".$id,
+                                'mobile' => $request->mobile_no,
+                                'address' => $request->address,
+                                'password' => Hash::make($request->password),
+                                'password_1' => $request->password,
+                                'referral_code' => "MCP".$id,
+                                'reg_date' => date("Y-m-d"),
+                            ]);
+                        }
+                        else{
+                            return Redirect::back()->with('danger', 'Joiner Already Exist!');
+                        }
+                    }
+                    else{
+                        $user = User::create([
                             'id' => $id,
                             'fullname' => $request->fullname,
                             'email' => $request->email,
-                            'username' => "MKP".$id,
+                            'username' => "MCP".$id,
                             'mobile' => $request->mobile_no,
                             'address' => $request->address,
                             'password' => Hash::make($request->password),
                             'password_1' => $request->password,
                             'referral_code' => "MCP".$id,
                             'reg_date' => date("Y-m-d"),
+                            'index' => $index,
+                            'parent_id' => $data->id,
                         ]);
-                    }
-                    else{
-                        return Redirect::back()->with('danger', 'Joiner Already Exist!');
                     }
                 }
                 if($request->join_side == "R")
                 {
                     $index = $sponsorUser->index + 1;
                     $checkeUser = User::where('parent_id', $data->id)->where('index', $index)->first();
-                    if($checkeUser->id == null)
+                    if(!empty($checkeUser))
                     {
-                        $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', $index)
-                        ->update([
+                        if($checkeUser->id == null)
+                        {
+                            $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', $index)
+                            ->update([
+                                'id' => $id,
+                                'fullname' => $request->fullname,
+                                'email' => $request->email,
+                                'username' => "MCP".$id,
+                                'mobile' => $request->mobile_no,
+                                'address' => $request->address,
+                                'password' => Hash::make($request->password),
+                                'password_1' => $request->password,
+                                'referral_code' => "MCP".$id,
+                                'reg_date' => date("Y-m-d"),
+                            ]);
+                        }
+                        else{
+                            return Redirect::back()->with('danger', 'Joiner Already Exist!');
+                        }
+                    }
+                    else{
+                        $user = User::create([
                             'id' => $id,
                             'fullname' => $request->fullname,
                             'email' => $request->email,
-                            'username' => "MKP".$id,
+                            'username' => "MCP".$id,
                             'mobile' => $request->mobile_no,
                             'address' => $request->address,
                             'password' => Hash::make($request->password),
                             'password_1' => $request->password,
                             'referral_code' => "MCP".$id,
                             'reg_date' => date("Y-m-d"),
+                            'index' => $index,
+                            'parent_id' => $data->id,
                         ]);
-                    }
-                    else{
-                        return Redirect::back()->with('danger', 'Joiner Already Exist!');
                     }
                 }
             }
@@ -208,25 +290,44 @@ class DistributorController extends Controller
             $bankdetails->acc_holder_name = $request->acc_holder_name;
             $bankdetails->save();
 
-            // if($bankdetails->save()){
-            // $message = "Hello+".urlencode($request->fullname)."%0aWelcome+to+Marketdrushti+"."%0aYour+Distributer+account+credentials+are+as+follows:%0aUsername:-+".$username."%0aPassword:-+".$request->password."%0aYou+can+login+to+your+distributer+account+here%0ahttp://shop.marketdrushti.com/login/";
-                        
-            // $number = $request->mobile;
-
-            // $this->sendSms($message,$number);
-            // dd($this->sendSms($message,$number));
+            if($bankdetails->save()){
+                $username = "MCP".$id;
+                $message = "Hello+".urlencode($request->fullname)."%0aWelcome+to+Market+Career+Power+Pvt.+Ltd."."%0aYour+Distributor+account+credentials+are+as+follows:%0aUsername:-+".$username."%0aPassword:-+".$request->password."%0aYou+can+login+to+your+distributor+account+here%0amarketcareerpower.com/login/";
+                            
+                $number = $request->mobile_no;
+    
+                $this->sendSms($message,$number); 
+                // dd($this->sendSms($message,$number)); 
             return redirect('/distributor/joiners')->with([
                 'user' => $user,
                 'kycdetails' => $kycdetails,
                 'bankdetails' => $bankdetails,
                 'usersInfo' => $usersInfo,
             ])->with('success', 'Joiner Added Successfully!');
-            // }  
+            }  
         }
         else{
             
             return Redirect::back()->with('danger', 'You cannot add more than 10 joiners.');
         }
+    }
+
+    public function sendSms($message,$number)
+    {
+        $url = 'http://sms.bulksmsind.in/v2/sendSMS?username=iceico&message='.$message.'&sendername=MRKTCP&smstype=TRANS&numbers='.$number.'&apikey=24ae8ae0-b514-499b-8baf-51d55808a2c4&peid=1201161909189905209&templateid=1207161959177676662';
+        $ch = curl_init();  
+        curl_setopt($ch,CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        curl_setopt($ch,CURLOPT_HEADER, false);
+    
+        $output=curl_exec($ch);
+    
+        curl_close($ch);
+    
+        return $output;
     }
 
     /**
@@ -408,5 +509,255 @@ class DistributorController extends Controller
    
 
         return redirect('/distributor/kyc-document')->with('success', 'KYC Document Uploaded.');
+    }
+
+    public function myIncome()
+    {
+        $id = Auth::user()->id;
+        $this->getUserLevel($id);
+        $userIncome = UserIncome::where('user_id', $id)->get()->sum('net_income');
+        $userSalary = UserSalary::where('user_id', $id)->get()->sum('net_income');
+        $reward = Reward::where('user_id', $id)->where('status', 'Qualified')->get()->sum('net_income');
+        $total = $userIncome + $userSalary + $reward;
+        return view('distributor.income.all', compact('userIncome', 'userSalary', 'reward', 'total'))->with($this->getUserLevel($id));
+    }
+
+    public function incomeDetails(Request $request)
+    {
+        if(request()->ajax())
+        {
+            $incomeDetails1 = UserIncome::where('user_id', Auth::user()->id);
+            if(!empty($request->level)){
+                $incomeDetails1 = $incomeDetails1->where('level', $request->level);
+            }
+            $incomeDetails = $incomeDetails1->orderBy('id', 'DESC')->get();
+            return datatables()->of($incomeDetails)
+            ->addColumn('referral_code', function($row){    
+                $user = User::where('id', $row->child_id)->first();
+                if(!empty($user))
+                {
+                    return $user->referral_code;
+                }                                                                                                                                                                                                                                                                                              
+            })
+            ->addColumn('fullname', function($row){    
+                $user = User::where('id', $row->child_id)->first();
+                if(!empty($user))
+                {
+                    return $user->fullname;
+                }                                                                                                                                                                                                                                                                                              
+            })
+            ->addColumn('payment_date', function($row){    
+                return date('d-m-Y', strtotime($row->payment_date));                                                                                                                                                                                                                                                                                           
+            })
+            ->rawColumns(['referral_code', 'fullname', 'payment_date'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+        $id = Auth::user()->id;
+        $this->getUserLevel($id);
+        return view('distributor.income.income-detail')->with($this->getUserLevel($id));
+    }
+
+    public function salaryDetails(Request $request)
+    {     
+        if(request()->ajax())
+        {
+            $salaryDetails1 = UserSalary::where('user_id', Auth::user()->id);
+            if(!empty($request->level1)){
+                $salaryDetails1 = $salaryDetails1->where('level', $request->level1);
+            }
+            $salaryDetails = $salaryDetails1->orderBy('id', 'DESC')->get();
+            return datatables()->of($salaryDetails)
+            ->addColumn('referral_code', function($row){    
+                $user = User::where('id', $row->child_id)->first();
+                if(!empty($user))
+                {
+                    return $user->referral_code;
+                }                                                                                                                                                                                                                                                                                              
+            })
+            ->addColumn('fullname', function($row){    
+                $user = User::where('id', $row->child_id)->first();
+                if(!empty($user))
+                {
+                    return $user->fullname;
+                }                                                                                                                                                                                                                                                                                              
+            })
+            ->addColumn('payment_date', function($row){    
+                return date('d-m-Y', strtotime($row->payment_date));                                                                                                                                                                                                                                                                                           
+            })
+            ->rawColumns(['referral_code', 'fullname', 'payment_date'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+        $id = Auth::user()->id;
+        $this->getUserLevel($id);
+        return view('distributor.income.salary-detail')->with($this->getUserLevel($id));
+    }
+    public function getUserLevel($id)
+    {
+        $users = User::where('parent_id', $id)->get();
+        $allMenus = User::pluck('fullname', 'referral_code','id', 'index')->all();
+        $items = array();
+        $items1 = array();
+        $items2 = array();
+        $items3 = array();
+        $items4 = array();
+        $items5 = array();
+        foreach($users as $user)
+        {
+            if(!empty($user->id)){
+                $levelPayment = ProductPayment::where('user_id', $user->id)->where('product_amount', 3000)->first();
+                if(!empty($levelPayment)){
+                    $items[] = $levelPayment->payment_date;
+                }
+                foreach($user->childs as $child)
+                {
+                    if(!empty($child->id)){
+                        $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                        if(!empty($levelPayment1)){
+                            $items1[] = $levelPayment1->payment_date;
+                        }
+                        foreach($child->childs as $child)
+                        {
+                            if(!empty($child->id)){
+                                $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                if(!empty($levelPayment2)){
+                                    $items2[] = $levelPayment2->payment_date;
+                                }
+                                foreach($child->childs as $child)
+                                {
+                                    if(!empty($child->id)){
+                                        $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                        if(!empty($levelPayment3)){
+                                            $items3[] = $levelPayment3->payment_date;
+                                        }
+                                        foreach($child->childs as $child)
+                                        {
+                                            if(!empty($child->id)){
+                                                $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                                if(!empty($levelPayment4)){
+                                                    $items4[] = $levelPayment4->payment_date;
+                                                }
+                                                foreach($child->childs as $child)
+                                                {
+                                                    if(!empty($child->id)){
+                                                        $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                                        if(!empty($levelPayment5)){
+                                                            $items5[] = $levelPayment5->payment_date;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return compact('users', 'allMenus', 'items', 'items1', 'items2', 'items3', 'items4', 'items5'); 
+    }
+
+    public function rewardDetails(Request $request)
+    {
+        if(request()->ajax())
+        {
+            $rewardDetails1 = Reward::where('user_id', Auth::user()->id);
+            if(!empty($request->level2)){
+                $rewardDetails1 = $rewardDetails1->where('level', $request->level2);
+            }
+            $rewardDetails = $rewardDetails1->orderBy('id', 'DESC')->get();
+            return datatables()->of($rewardDetails)
+            ->addColumn('status', function($row){    
+                if($row->status == "Qualified")
+                {
+                    return '<span class="badge bg-teal">Qualified</span>';
+                }                                                         
+                else{
+                    return '<span class="badge bg-pink">Not Qualified</span>';
+                }                                                                                                                                                                                                                                  
+            })
+            ->rawColumns(['status'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+        $id = Auth::user()->id;
+        $this->getUserLevel($id);
+        return view('distributor.income.reward')->with($this->getUserLevel($id));
+    }
+
+    public function myWallet()
+    {
+        $userWallet = UserWallet::where('user_id', Auth::user()->id)->sum('salary');
+        $amount = number_format($userWallet);
+        $adminWallet = AdminPayment::where('user_id', Auth::user()->id)->first();
+        $Month = DB::table('user_wallets')->join('settlements', 'settlements.id', '=', 'user_wallets.settlement_id')
+        ->where('month_year', date('F Y'))->where('user_id', Auth::user()->id)->get()->sum('salary');
+        $paymentSettlement = DB::table('user_wallets')->join('settlements', 'settlements.id', '=', 'user_wallets.settlement_id')
+        ->where('user_id', Auth::user()->id)
+        ->select('user_wallets.*', 'settlements.month_year', 'settlements.start_date', 'settlements.end_date')->get();
+        if(request()->ajax())
+        {
+            return datatables()->of($paymentSettlement)
+            ->addColumn('start_date', function($row){    
+                return date('d-m-Y', strtotime($row->start_date));                                                                                                                                                                                                                       
+            })
+            ->addColumn('end_date', function($row){    
+                return date('d-m-Y', strtotime($row->end_date));                                                                                                                                                                                                                       
+            })
+            ->addColumn('salary', function($row){    
+                return number_format($row->salary);                                                                                                                                                                                                                       
+            })
+            ->addColumn('balance', function($row){    
+                return number_format($row->balance);                                                                                                                                                                                                                       
+            })
+            ->addColumn('extra', function($row){    
+                return number_format($row->extra);                                                                                                                                                                                                                       
+            })
+            ->addColumn('adminwallet', function($row){    
+                return number_format($row->adminwallet);                                                                                                                                                                                                                       
+            })
+            ->rawColumns(['status'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+        return view('distributor.wallet', compact('userWallet', 'adminWallet', 'amount', 'Month'));
+    }
+
+    public function paymentSettlement()
+    {
+        $paymentSettlement = DB::table('payment_settlements')->join('settlements', 'settlements.id', '=', 'payment_settlements.settlement_id')
+        ->where('user_id', Auth::user()->id)
+        ->select('payment_settlements.*', 'settlements.month_year', 'settlements.start_date', 'settlements.end_date')->get();
+        if(request()->ajax())
+        {
+            return datatables()->of($paymentSettlement)
+            ->addColumn('start_date', function($row){    
+                return date('d-m-Y', strtotime($row->start_date));                                                                                                                                                                                                                       
+            })
+            ->addColumn('end_date', function($row){    
+                return date('d-m-Y', strtotime($row->end_date));                                                                                                                                                                                                                       
+            })
+            ->addColumn('total', function($row){    
+                return number_format($row->total);                                                                                                                                                                                                                       
+            })
+            ->addColumn('settled_status', function($row){    
+                if($row->settled_status == 0)
+                {
+                    return '<span class="badge bg-pink">Not Settled</span>';
+                }   
+                else{
+                    return '<span class="badge bg-teal">Settled</span>';
+                }                                                                                                                                                                                                                   
+            })
+            ->addColumn('settled_date', function($row){    
+                return date('d-m-Y', strtotime($row->settled_date));                                                                                                                                                                                        
+            })
+            ->rawColumns(['settled_status'])
+            ->addIndexColumn()
+            ->make(true);
+        }
     }
 }

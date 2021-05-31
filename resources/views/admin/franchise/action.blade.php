@@ -1,0 +1,3 @@
+<a href="{{ route('admin.franchise.edit', $id) }}"><button type="button" class="btn btn-warning waves-effect">Edit</button></a>
+<a href="{{ route('admin.franchise.show', $id) }}"><button type="button" class="btn btn-primary waves-effect">Profile</button></a>
+<!-- <a href="javascript:void(0)" id="delete" data-id="{{ $id }}"><button type="button" class="btn btn-danger waves-effect">Delete</button></a> -->

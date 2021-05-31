@@ -5,6 +5,9 @@
 <!-- JQuery DataTable Css -->
 <link href="{{ asset('adminAsset/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css') }}" rel="stylesheet">
 <script src="https://use.fontawesome.com/d5c7b56460.js"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <style>
 td.details-control:before {
     font-family: 'FontAwesome';
@@ -102,6 +105,11 @@ tr.shown td.details-control:before{
 <!-- <script src="{{ asset('adminAsset/js/pages/tables/jquery-datatable.js') }}"></script> -->
 <!-- <script src="{{ asset('adminAsset/js/pages/index.js') }}"></script> -->
 <script>
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
 var SITEURL = "{{ route('admin.distributor.index')}}";
 function format ( d ) {
     // `d` is the original data object for the row
@@ -158,5 +166,24 @@ $(document).ready(function() {
         }
     });
 })
+
+$('body').on('click', '#delete', function () {
+    var id = $(this).data("id");
+
+    if(confirm("Are You sure want to delete !")){
+        $.ajax({
+            type: "delete",
+            url: "{{ url('admin/distributor') }}"+'/'+id,
+            success: function (data) {
+            var oTable = $('#simpletable').dataTable(); 
+            oTable.fnDraw(false);
+            toastr.success(data.success);
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+    }
+});
 </script>
 @endsection

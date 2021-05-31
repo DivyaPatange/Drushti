@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Marketdrushti | Distributor | Sign In</title>
+    <title>Market Career Power | Distributor | Sign In</title>
     <!-- Favicon-->
-    <link rel="icon" href="{{ asset('adminAsset/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('asset/images/mcp123.png') }}" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
@@ -44,14 +44,17 @@
     </div>
     <div class="login-box">
         <div class="logo">
-            <a href="javascript:void(0);">Market<b>Drushti</b></a>
+            <a href="javascript:void(0);">Market Career <b>Power</b></a>
             <small>Distributor - Log In</small>
         </div>
         <div class="card">
-            <div class="body">
+            <div class="body text-center">
+                    
+                <img src="{{ asset('asset/images/mcp123.png') }}" alt="" width="150px" class="">  
                 <form id="sign_in" method="POST" action="{{ route('login') }}">
                 @csrf
-                    <div class="msg">Sign in to start your session</div>
+                    <div class="msg">
+                    Sign in to start your session</div>
                     <div class="input-group">
                         <span class="input-group-addon">
                             <i class="material-icons">person</i>
@@ -85,6 +88,14 @@
                         </div>
                         <div class="col-xs-4">
                             <button class="btn btn-block bg-pink waves-effect" type="submit">SIGN IN</button>
+                        </div>
+                    </div>
+                    <div class="row m-t-15 m-b--20">
+                        <div class="col-xs-6">
+                            <a href="{{ url('/register') }}">Register Now!</a>
+                        </div>
+                        <div class="col-xs-6 align-right">
+                            <a href="forgot-password.html">Forgot Password?</a>
                         </div>
                     </div>
                 </form>

@@ -22,8 +22,6 @@ class CreateFranchisesTable extends Migration
             $table->string('email')->nullable();
             $table->string('nominee_relation')->nullable();
             $table->date('reg_date')->nullable();
-            $table->string('parent_id');
-            $table->string('referral_code');
             $table->string('address')->nullable();
             $table->string('password');
             $table->string('password_1');

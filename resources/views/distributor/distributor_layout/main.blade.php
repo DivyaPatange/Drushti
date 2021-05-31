@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Marketdrushti | Distributor | @yield('title')</title>
+    <title>Market Career Power | Distributor | @yield('title')</title>
     <!-- Favicon-->
     @include('distributor.distributor_layout.stylesheet')
     @yield('customcss')

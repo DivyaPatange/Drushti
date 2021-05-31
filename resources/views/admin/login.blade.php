@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Marketdrushti | Admin | Sign In</title>
+    <title>Market Career Power | Admin | Sign In</title>
     <!-- Favicon-->
-    <link rel="icon" href="{{ asset('adminAsset/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('asset/images/mcp123.png') }}" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
@@ -44,11 +44,12 @@
     </div>
     <div class="login-box">
         <div class="logo">
-            <a href="javascript:void(0);">Market<b>Drushti</b></a>
+            <a href="javascript:void(0);">Market Career <b>Power</b></a>
             <small>Admin - Log In</small>
         </div>
         <div class="card">
-            <div class="body">
+            <div class="body text-center">
+                <img src="{{ asset('asset/images/mcp123.png') }}" alt="" width="150px" class="">  
                 <form id="sign_in" method="POST" action="{{ route('admin.login.submit') }}">
                 @csrf
                     <div class="msg">Sign in to start your session</div>

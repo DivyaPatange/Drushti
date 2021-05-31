@@ -58,44 +58,8 @@
                                 <br>
                                 {{Auth::user()->referral_code}}
                             </span>
-                            <ul class="double"> 
-                                                            
-                                @foreach($users as $key => $user)
-                                @if((!empty($user->id)) && (++$key == $user->index))
-                                <li class="col">
-                                    <span class="tf-nc" style="font-size:15px;">
-                                        <a href="{{ route('admin.distributor.show', $user->id) }}">
-                                            <!-- <i class="fas fa-atom" style="font-size:30px; color:#08ff41"></i></a> -->
-                                            <i class="fas fa-atom" style="font-size:30px; color:red"></i></a>
-                                        <br>
-                                        <!-- dd(); -->
-
-                                        {{ $user->fullname }}
-                                        <br>
-                                        {{ $user->referral_code }}
-                                    </span>
-                                    @if(count($user->childs))
-                                        @include('distributor.treeview.manageChild',['childs' => $user->childs])
-                                    @endif
-                                </li>
-                                @else
-                                <li class="col" style="">
-                                    <span class="tf-nc" style="font-size:15px;">
-                                        <a href="">
-                                            <i class="fas fa-atom" style="font-size:30px; color:#808080"></i></a>
-                                            <!-- <i class="fas fa-atom" style="font-size:30px; color:red"></i></a> -->
-                                        <br>
-                                        <!-- dd(); -->
-                                        MCP########
-
-                                    </span>
-                                   
-                                </li>
-
-                                @endif
-                                @endforeach
-                            </li>
-                        </ul>
+                            
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -2,10 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Franchise extends Model
+class Franchise extends Authenticatable
 {
-    use HasFactory;
+    use Notifiable;
+
+    protected $guard = 'franchise';
+
+    protected $table = "franchises";
+    protected $fillable = [
+        'fullname', 'email', 'username', 'password','mobile','nominee_name', 'nominee_relation', 'reg_date', 'address','password_1', 'parent_id', 'referral_code'
+    ];
 }

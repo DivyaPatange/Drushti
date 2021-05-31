@@ -75,27 +75,7 @@
                                 Market Career Power
                                 <br>
                             </span>
-                            <ul class="" id="Decor"> 
-                                                            
-                                @foreach($users as $user)
-                                <li>
-                                    <span class="tf-nc" style="font-size:15px;">
-                                        <a href="{{ route('admin.distributor.show', $user->id) }}">
-                                            <!-- <i class="fas fa-atom" style="font-size:30px; color:#08ff41"></i></a> -->
-                                            <i class="fas fa-atom" style="font-size:30px; color:red"></i></a>
-                                        <br>
-                                        <!-- dd(); -->
-
-                                        {{ $user->fullname }}
-                                        <br>
-                                        {{ $user->referral_code }}
-                                    </span>
-                                    @if(count($user->childs))
-                                        @include('admin.company-tree.manageChild',['childs' => $user->childs])
-                                    @endif
-                                </li>
-                                @endforeach
-                            </ul>
+                            
                         </li>
                     </ul>
                 </div>

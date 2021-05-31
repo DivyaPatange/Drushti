@@ -35,6 +35,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.franchise.index') }}">
+                    <i class="material-icons">widgets</i>
+                    <span>Franchise</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.company-tree') }}">
                     <i class="material-icons">layers</i>
                     <span>Company Tree</span>
@@ -42,154 +48,45 @@
             </li>
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
-                    <i class="material-icons">widgets</i>
-                    <span>Widgets</span>
-                </a>
-                <ul class="ml-menu">
-                    <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Cards</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="pages/widgets/cards/basic.html">Basic</a>
-                            </li>
-                            <li>
-                                <a href="pages/widgets/cards/colored.html">Colored</a>
-                            </li>
-                            <li>
-                                <a href="pages/widgets/cards/no-header.html">No Header</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Infobox</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="pages/widgets/infobox/infobox-1.html">Infobox-1</a>
-                            </li>
-                            <li>
-                                <a href="pages/widgets/infobox/infobox-2.html">Infobox-2</a>
-                            </li>
-                            <li>
-                                <a href="pages/widgets/infobox/infobox-3.html">Infobox-3</a>
-                            </li>
-                            <li>
-                                <a href="pages/widgets/infobox/infobox-4.html">Infobox-4</a>
-                            </li>
-                            <li>
-                                <a href="pages/widgets/infobox/infobox-5.html">Infobox-5</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="javascript:void(0);" class="menu-toggle">
-                    <i class="material-icons">swap_calls</i>
-                    <span>User Interface (UI)</span>
-                </a>
-                <ul class="ml-menu">
-                    <li>
-                        <a href="pages/ui/alerts.html">Alerts</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/animations.html">Animations</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/badges.html">Badges</a>
-                    </li>
-
-                    <li>
-                        <a href="pages/ui/breadcrumbs.html">Breadcrumbs</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/buttons.html">Buttons</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/collapse.html">Collapse</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/colors.html">Colors</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/dialogs.html">Dialogs</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/icons.html">Icons</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/labels.html">Labels</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/list-group.html">List Group</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/media-object.html">Media Object</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/modals.html">Modals</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/notifications.html">Notifications</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/pagination.html">Pagination</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/preloaders.html">Preloaders</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/progressbars.html">Progress Bars</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/range-sliders.html">Range Sliders</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/sortable-nestable.html">Sortable & Nestable</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/tabs.html">Tabs</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/thumbnails.html">Thumbnails</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/tooltips-popovers.html">Tooltips & Popovers</a>
-                    </li>
-                    <li>
-                        <a href="pages/ui/waves.html">Waves</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">assignment</i>
-                    <span>Forms</span>
+                    <span>KYC Verification</span>
                 </a>
                 <ul class="ml-menu">
                     <li>
-                        <a href="pages/forms/basic-form-elements.html">Basic Form Elements</a>
+                        <a href="{{ route('admin.users.kyc-verification') }}">Distributor</a>
                     </li>
                     <li>
-                        <a href="pages/forms/advanced-form-elements.html">Advanced Form Elements</a>
-                    </li>
-                    <li>
-                        <a href="pages/forms/form-examples.html">Form Examples</a>
-                    </li>
-                    <li>
-                        <a href="pages/forms/form-validation.html">Form Validation</a>
-                    </li>
-                    <li>
-                        <a href="pages/forms/form-wizard.html">Form Wizard</a>
-                    </li>
-                    <li>
-                        <a href="pages/forms/editors.html">Editors</a>
+                        <a href="{{ route('admin.franchise.kyc-verification') }}">Franchise</a>
                     </li>
                 </ul>
             </li>
+            <li>
+                <a href="{{ route('admin.orders') }}">
+                    <i class="material-icons">swap_calls</i>
+                    <span>All Orders</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.wallet') }}">
+                    <i class="material-icons">trending_down</i>
+                    <span>Admin Wallet</span>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0)" class="menu-toggle">
+                    <i class="material-icons">content_copy</i>
+                    <span>Payment Settlement</span>
+                </a>
+                <ul class="ml-menu">
+                    <li>
+                        <a href="{{ route('admin.income-settlement') }}">Income Settlement</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.salary-settlement') }}">Salary Settlement</a>
+                    </li>
+                </ul>
+            </li>
+            <!-- 
             <li>
                 <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">view_list</i>
@@ -356,18 +253,18 @@
                     <i class="material-icons col-light-blue">donut_large</i>
                     <span>Information</span>
                 </a>
-            </li>
+            </li> -->
         </ul>
     </div>
     <!-- #Menu -->
     <!-- Footer -->
-    <div class="legal">
+    <!-- <div class="legal">
         <div class="copyright">
             &copy; 2016 - 2017 <a href="javascript:void(0);">AdminBSB - Material Design</a>.
         </div>
         <div class="version">
             <b>Version: </b> 1.0.5
         </div>
-    </div>
+    </div> -->
     <!-- #Footer -->
 </aside>

@@ -1,0 +1,1 @@
+<a href="{{ route('franchise.product-payment.view', $id) }}"><button type="button" class="btn btn-warning waves-effect">View</button></a>

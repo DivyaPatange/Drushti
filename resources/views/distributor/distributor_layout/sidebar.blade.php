@@ -168,32 +168,18 @@
                 </ul> -->
             </li>
             <li>
-                <a href="javascript:void(0);" class="menu-toggle">
+                <a href="{{ route('distributor.my-income') }}">
                     <i class="material-icons">assignment</i>
-                    <span>Forms</span>
+                    <span>My Income</span>
                 </a>
-                <ul class="ml-menu">
-                    <li>
-                        <a href="pages/forms/basic-form-elements.html">Basic Form Elements</a>
-                    </li>
-                    <li>
-                        <a href="pages/forms/advanced-form-elements.html">Advanced Form Elements</a>
-                    </li>
-                    <li>
-                        <a href="pages/forms/form-examples.html">Form Examples</a>
-                    </li>
-                    <li>
-                        <a href="pages/forms/form-validation.html">Form Validation</a>
-                    </li>
-                    <li>
-                        <a href="pages/forms/form-wizard.html">Form Wizard</a>
-                    </li>
-                    <li>
-                        <a href="pages/forms/editors.html">Editors</a>
-                    </li>
-                </ul>
             </li>
             <li>
+                <a href="{{ route('distributor.my-wallet') }}">
+                    <i class="material-icons">content_copy</i>
+                    <span>My Wallet</span>
+                </a>
+            </li>
+            <!-- <li>
                 <a href="javascript:void(0);" class="menu-toggle">
                     <i class="material-icons">view_list</i>
                     <span>Tables</span>
@@ -359,18 +345,18 @@
                     <i class="material-icons col-light-blue">donut_large</i>
                     <span>Information</span>
                 </a>
-            </li>
+            </li> -->
         </ul>
     </div>
     <!-- #Menu -->
     <!-- Footer -->
-    <div class="legal">
+    <!-- <div class="legal">
         <div class="copyright">
             &copy; 2016 - 2017 <a href="javascript:void(0);">AdminBSB - Material Design</a>.
         </div>
         <div class="version">
             <b>Version: </b> 1.0.5
         </div>
-    </div>
+    </div> -->
     <!-- #Footer -->
 </aside>

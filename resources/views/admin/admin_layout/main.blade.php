@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Marketdrushti | Admin | @yield('title')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Market Career Power | Admin | @yield('title')</title>
     <!-- Favicon-->
     @include('admin.admin_layout.stylesheet')
     @yield('customcss')
@@ -205,6 +206,13 @@
     </section>
 
     @include('admin.admin_layout.scripts')
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
     @yield('customjs')
 </body>
 
