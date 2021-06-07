@@ -73,6 +73,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.joining-detail.index') }}">
+                    <i class="material-icons">view_list</i>
+                    <span>Joining Details</span>
+                </a>
+            </li>
+            <li>
                 <a href="javascript:void(0)" class="menu-toggle">
                     <i class="material-icons">content_copy</i>
                     <span>Payment Settlement</span>

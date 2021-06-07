@@ -55,10 +55,23 @@
                         </div>
                     </div>
                     <div class="row clearfix">
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
+                            <div class="demo-radio-button">
+                                <input type="radio" id="radio_30" name="join_side" value="L" class="with-gap radio-col-red" @if(old('join_side') == "L") checked @endif/>
+                                <label for="radio_30">Left Join</label>
+                                <input type="radio" id="radio_31" name="join_side" value="R" class="with-gap radio-col-pink" @if(old('join_side') == "R") checked @endif/>
+                                <label for="radio_31">Right Join</label>
+                            </div>
+                            @error('join_side')
+                                <span class="invalid-feedback error" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 <div class="form-line">
-                                    <input type="text" name="sponsor_id" class="form-control @error('sponsor_id') is-invalid @enderror" id="sponsor_id" placeholder="Enter Sponsor ID" value="{{ old('sponsor_id') }}"/>
+                                    <input type="text" name="sponsor_id" class="form-control @error('sponsor_id') is-invalid @enderror" id="sponsor_id" readonly placeholder="Sponsor ID" value="{{ old('sponsor_id') }}"/>
                                 </div>
                                 @error('sponsor_id')
                                     <span class="invalid-feedback error" role="alert">
@@ -67,9 +80,16 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <div class="form-group">
-                                <h3 id="sponsor_name"></h3>
+                                <div class="form-line">
+                                    <input type="text" name="sponsor_name" class="form-control @error('sponsor_name') is-invalid @enderror" id="sponsor_name" readonly placeholder="Sponsor Name" value="{{ old('sponsor_name') }}"/>
+                                </div>
+                                @error('sponsor_name')
+                                    <span class="invalid-feedback error" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -129,19 +149,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="demo-radio-button">
-                                <input type="radio" id="radio_30" name="join_side" value="L" class="with-gap radio-col-red" @if(old('join_side') == "L") checked @endif/>
-                                <label for="radio_30">Left Join</label>
-                                <input type="radio" id="radio_31" name="join_side" value="R" class="with-gap radio-col-pink" @if(old('join_side') == "R") checked @endif/>
-                                <label for="radio_31">Right Join</label>
-                            </div>
-                            @error('join_side')
-                                <span class="invalid-feedback error" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
                         <div class="col-sm-12">
                         <button type="submit" class="btn btn-primary waves-effect ">Submit</button>
                         </div>
@@ -180,28 +187,27 @@ $(document).ready(function () {
     });
 })
 
-$(document).ready(function () {
-    // keyup function looks at the keys typed on the search box
-    $('#sponsor_id').on('keyup',function() {
-        // the text typed in the input field is assigned to a variable 
+$(document).ready(function(){
+    $("input[type='radio']").click(function(){
         var query = $(this).val();
-        // call to an ajax function
+        var referral_code = $("#user_referral_info").val();
         $.ajax({
             // assign a controller function to perform search action - route name is search
-            url:"{{ route('distributor.search') }}",
+            url:"{{ route('distributor.search.sponsor') }}",
             // since we are getting data methos is assigned as GET
             type:"GET",
             // data are sent the server
-            data:{'user_referral_info':query},
+            data:{'side':query, referral_code:referral_code},
             // if search is succcessfully done, this callback function is called
             success:function (data) {
+                // alert(data);
                 // print the search results in the div called country_list(id)
-                $('#sponsor_name').html(data);
+                $('#sponsor_id').val(data.sponsor_id);
+                $('#sponsor_name').val(data.sponsor_name);
             }
         })
-        // end of ajax call
     });
-})
+});
 </script>
 <script type="text/javascript"> 
     $(function(){

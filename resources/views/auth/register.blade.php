@@ -72,12 +72,23 @@
                         @enderror
                         <span id="referral_name" class="text-dark"></span>
                     </div>
+                    <div class="demo-radio-button">
+                        <input type="radio" id="radio_30" name="join_side" value="L" class="with-gap radio-col-red" @if(old('join_side') == "L") Checked @endif>
+                        <label for="radio_30">Left Join</label>
+                        <input type="radio" id="radio_31" name="join_side" value="R" class="with-gap radio-col-pink" @if(old('join_side') == "R") Checked @endif>
+                        <label for="radio_31">Right Join</label>
+                    </div>
+                    @error('join_side')
+                        <span class="invalid-feedback error" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                     <div class="input-group">
                         <span class="input-group-addon">
                             <i class="material-icons">account_box</i>
                         </span>
                         <div class="form-line">
-                            <input type="text" class="form-control" value="{{ old('sponsor_id') }}" name="sponsor_id" id="sponsor_id" placeholder="Enter Sponsor ID">
+                            <input type="text" class="form-control" value="{{ old('sponsor_id') }}" readonly name="sponsor_id" id="sponsor_id" placeholder="Sponsor ID">
                         </div>
                         @error('sponsor_id')
                             <span class="invalid-feedback error" role="alert">
@@ -146,17 +157,6 @@
                             <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password">
                         </div>
                     </div>
-                    <div class="demo-radio-button">
-                        <input type="radio" id="radio_30" name="join_side" value="L" class="with-gap radio-col-red" @if(old('join_side') == "L") Checked @endif>
-                        <label for="radio_30">Left Join</label>
-                        <input type="radio" id="radio_31" name="join_side" value="R" class="with-gap radio-col-pink" @if(old('join_side') == "R") Checked @endif>
-                        <label for="radio_31">Right Join</label>
-                    </div>
-                    @error('join_side')
-                        <span class="invalid-feedback error" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
                     <button class="btn btn-block btn-lg bg-pink waves-effect" type="submit">SIGN UP</button>
 
                     <div class="m-t-25 m-b--5 align-center">
@@ -205,29 +205,27 @@ $(document).ready(function () {
         // end of ajax call
     });
 })
-
-$(document).ready(function () {
-    // keyup function looks at the keys typed on the search box
-    $('#sponsor_id').on('keyup',function() {
-        // the text typed in the input field is assigned to a variable 
+$(document).ready(function(){
+    $("input[type='radio']").click(function(){
         var query = $(this).val();
-        // call to an ajax function
+        var referral_code = $("#user_referral_info").val();
         $.ajax({
             // assign a controller function to perform search action - route name is search
-            url:"{{ route('search') }}",
+            url:"{{ route('search.sponsor') }}",
             // since we are getting data methos is assigned as GET
             type:"GET",
             // data are sent the server
-            data:{'user_referral_info':query},
+            data:{'side':query, referral_code:referral_code},
             // if search is succcessfully done, this callback function is called
             success:function (data) {
+                // alert(data);
                 // print the search results in the div called country_list(id)
-                $('#sponsor_name').html(data);
+                $('#sponsor_id').val(data.sponsor_id);
+                $('#sponsor_name').html(data.sponsor_name);
             }
         })
-        // end of ajax call
     });
-})
+});
 </script>
 </body>
 

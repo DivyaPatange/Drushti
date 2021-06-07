@@ -797,4 +797,39 @@ class DistributorController extends Controller
             return response()->json(['success' => 'Due Reverted Successfully!']);
         }
     }
+
+    public function joiningDetails(Request $request)
+    {
+        if(request()->ajax()) {
+            $users1 = User::where('id', '!=', null);
+            // dd(!empty($request->classID) && !empty($request->sectionID) && !empty($request->student));
+            if(!empty($request->month_join)){
+                if($request->month_join == "Monthly Joining"){
+                    $start_date = $request->month.'-01';
+                    $end_date = date("Y-m-t", strtotime($start_date));
+                    $users1 = $users1->whereBetween('reg_date', [$start_date, $end_date]);
+                }
+                if($request->month_join == "Current Joining")
+                {
+                    $start_date = date('Y-m-01');
+                    $end_date = date('Y-m-t');
+                    $users1 = $users1->whereBetween('reg_date', [$start_date, $end_date]);
+                }
+                if($request->month_join == "Previous Joining")
+                {
+                    $date = date('Y-m-d',strtotime("-1 days"));
+                    $users1 = $users1->where('reg_date', '<=', $date);
+                }
+            }
+            $users = $users1->orderBy('id', 'DESC')->get();
+            return datatables()->of($users)
+            ->addColumn('reg_date', function($row){    
+                return date('d-m-Y', strtotime($row->reg_date));                                                                                                                                                                                                                                                                                            
+            })
+            ->rawColumns(['reg_date'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+        return view('admin.joiningDetail.index');
+    }
 }

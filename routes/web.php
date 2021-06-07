@@ -45,6 +45,7 @@ Route::get('plan', function () {
 Auth::routes();
 
 Route::post('/register/submit', [App\Http\Controllers\RegisterController::class, 'store'])->name('register.submit');
+Route::get('/search-sponsor', [App\Http\Controllers\RegisterController::class, 'searchSponsor'])->name('search.sponsor');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/search', [App\Http\Controllers\Auth\RegisterController::class, 'search'])->name('search');
 
@@ -68,6 +69,7 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::get('/salary-settlement', [DistributorController::class, 'salarySettlement'])->name('salary-settlement');
     Route::post('/generate-salary-settlement', [DistributorController::class, 'generateSalarySettlement'])->name('generate-salary-settlement');
     Route::get('/wallet', [DistributorController::class, 'adminWallet'])->name('wallet');
+    Route::get('/joining-details', [DistributorController::class, 'joiningDetails'])->name('joining-detail.index');
     Route::get('/income-settlement/{id}', [DistributorController::class, 'viewIncomeSettlement'])->name('income-settlement.view');
     Route::get('/salary-settlement/{id}', [DistributorController::class, 'viewSalarySettlement'])->name('salary-settlement.view');
     Route::get('/paid-income-settlement/{id}', [DistributorController::class, 'viewPaidIncomeSettlement'])->name('income-settlement.paid');
@@ -81,6 +83,7 @@ Route::prefix('distributor')->name('distributor.')->group(function() {
     Route::get('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
     Route::resource('/joiners', App\Http\Controllers\Distributor\DistributorController::class);
     Route::get('/search', [App\Http\Controllers\Distributor\DistributorController::class, 'search'])->name('search');
+    Route::get('/search/sponsor', [App\Http\Controllers\Distributor\DistributorController::class, 'searchSponsor'])->name('search.sponsor');
     Route::get('/treeview', [App\Http\Controllers\Distributor\DistributorController::class, 'treeview'])->name('treeview');
     Route::resource('/change-password', ChangePasswordController::class);
     Route::get('/kyc-document', [App\Http\Controllers\Distributor\DistributorController::class, 'kycDocument'])->name('kyc-document');
@@ -112,5 +115,9 @@ Route::prefix('franchise')->name('franchise.')->group(function() {
     Route::get('/profile', [App\Http\Controllers\Franchise\FranchiseController::class, 'profile'])->name('profile');
     Route::post('/profile/update', [App\Http\Controllers\Franchise\FranchiseController::class, 'updateProfile'])->name('profile.update');
     Route::post('/password/update', [App\Http\Controllers\Franchise\FranchiseController::class, 'updatePassword'])->name('password.update');
+    Route::get('/payment', [App\Http\Controllers\Franchise\FranchiseController::class, 'payment'])->name('payment');
+    Route::get('/payment-search', [App\Http\Controllers\Franchise\FranchiseController::class, 'searchDistributorDetails'])->name('payment-search');
+    Route::post('/send-otp', [App\Http\Controllers\Franchise\FranchiseController::class, 'sendOtp'])->name('product-payment.send-otp');
+    Route::post('/product-payment/submit', [App\Http\Controllers\Franchise\FranchiseController::class, 'submitProductPayment'])->name('product-payment.submit');
 
 });

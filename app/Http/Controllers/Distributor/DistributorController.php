@@ -170,14 +170,34 @@ class DistributorController extends Controller
             else{
                 if($request->join_side == "L")
                 {
-                    $index = $sponsorUser->index - 1;
-                    $checkeUser = User::where('parent_id', $data->id)->where('index', $index)->first();
-                    if(!empty($checkeUser))
-                    {
-                        if($checkeUser->id == null)
+                    $leftUser = User::where('parent_id', $data->id)->where('id', '!=', null)->whereBetween('index', [1,5])->get();
+                    if(count($leftUser) < 5){
+                        $index = $sponsorUser->index - 1;
+                        $checkeUser = User::where('parent_id', $data->id)->where('index', $index)->first();
+                        if(!empty($checkeUser))
                         {
-                            $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', $index)
-                            ->update([
+                            if($checkeUser->id == null)
+                            {
+                                $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', $index)
+                                ->update([
+                                    'id' => $id,
+                                    'fullname' => $request->fullname,
+                                    'email' => $request->email,
+                                    'username' => "MCP".$id,
+                                    'mobile' => $request->mobile_no,
+                                    'address' => $request->address,
+                                    'password' => Hash::make($request->password),
+                                    'password_1' => $request->password,
+                                    'referral_code' => "MCP".$id,
+                                    'reg_date' => date("Y-m-d"),
+                                ]);
+                            }
+                            else{
+                                return Redirect::back()->with('danger', 'Joiner Already Exist!');
+                            }
+                        }
+                        else{
+                            $user = User::create([
                                 'id' => $id,
                                 'fullname' => $request->fullname,
                                 'email' => $request->email,
@@ -188,39 +208,46 @@ class DistributorController extends Controller
                                 'password_1' => $request->password,
                                 'referral_code' => "MCP".$id,
                                 'reg_date' => date("Y-m-d"),
+                                'index' => $index,
+                                'parent_id' => $data->id,
                             ]);
-                        }
-                        else{
-                            return Redirect::back()->with('danger', 'Joiner Already Exist!');
                         }
                     }
                     else{
-                        $user = User::create([
-                            'id' => $id,
-                            'fullname' => $request->fullname,
-                            'email' => $request->email,
-                            'username' => "MCP".$id,
-                            'mobile' => $request->mobile_no,
-                            'address' => $request->address,
-                            'password' => Hash::make($request->password),
-                            'password_1' => $request->password,
-                            'referral_code' => "MCP".$id,
-                            'reg_date' => date("Y-m-d"),
-                            'index' => $index,
-                            'parent_id' => $data->id,
-                        ]);
+                        return Redirect::back()->with('danger', 'Joiner cannot be Added!');
                     }
+
                 }
                 if($request->join_side == "R")
                 {
-                    $index = $sponsorUser->index + 1;
-                    $checkeUser = User::where('parent_id', $data->id)->where('index', $index)->first();
-                    if(!empty($checkeUser))
-                    {
-                        if($checkeUser->id == null)
+                    $rightUser = User::where('parent_id', $data->id)->where('id', '!=', null)->whereBetween('index', [6,10])->get();
+                    if(count($rightUser) < 5){
+                        $index = $sponsorUser->index + 1;
+                        $checkeUser = User::where('parent_id', $data->id)->where('index', $index)->first();
+                        if(!empty($checkeUser))
                         {
-                            $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', $index)
-                            ->update([
+                            if($checkeUser->id == null)
+                            {
+                                $joinSide = User::where('parent_id', $data->id)->where('id', '=', null)->where('index', $index)
+                                ->update([
+                                    'id' => $id,
+                                    'fullname' => $request->fullname,
+                                    'email' => $request->email,
+                                    'username' => "MCP".$id,
+                                    'mobile' => $request->mobile_no,
+                                    'address' => $request->address,
+                                    'password' => Hash::make($request->password),
+                                    'password_1' => $request->password,
+                                    'referral_code' => "MCP".$id,
+                                    'reg_date' => date("Y-m-d"),
+                                ]);
+                            }
+                            else{
+                                return Redirect::back()->with('danger', 'Joiner Already Exist!');
+                            }
+                        }
+                        else{
+                            $user = User::create([
                                 'id' => $id,
                                 'fullname' => $request->fullname,
                                 'email' => $request->email,
@@ -231,27 +258,13 @@ class DistributorController extends Controller
                                 'password_1' => $request->password,
                                 'referral_code' => "MCP".$id,
                                 'reg_date' => date("Y-m-d"),
+                                'index' => $index,
+                                'parent_id' => $data->id,
                             ]);
-                        }
-                        else{
-                            return Redirect::back()->with('danger', 'Joiner Already Exist!');
                         }
                     }
                     else{
-                        $user = User::create([
-                            'id' => $id,
-                            'fullname' => $request->fullname,
-                            'email' => $request->email,
-                            'username' => "MCP".$id,
-                            'mobile' => $request->mobile_no,
-                            'address' => $request->address,
-                            'password' => Hash::make($request->password),
-                            'password_1' => $request->password,
-                            'referral_code' => "MCP".$id,
-                            'reg_date' => date("Y-m-d"),
-                            'index' => $index,
-                            'parent_id' => $data->id,
-                        ]);
+                        return Redirect::back()->with('danger', 'Joiner cannot be Added!');
                     }
                 }
             }
@@ -309,6 +322,38 @@ class DistributorController extends Controller
         else{
             
             return Redirect::back()->with('danger', 'You cannot add more than 10 joiners.');
+        }
+    }
+
+    public function searchSponsor(Request $request)
+    {
+        if($request->ajax()) {
+            // select country name from database
+            $referralUser = User::where('referral_code', $request->referral_code)->first();
+            $users = User::where('parent_id', $referralUser->id)->where('id', '!=', null)->get();
+            if($request->side == "L")
+            {
+                $sponsorUser = User::where('parent_id', $referralUser->id)->where('id', '!=', null)->whereBetween('index', [1,5])->get()->min('index');
+                if(empty($sponsorUser))
+                {
+                    return response()->json(['sponsor_id' => $request->referral_code, 'sponsor_name' => $referralUser->fullname]);
+                }
+                else{
+                    $sponsorName = User::where('parent_id', $referralUser->id)->where('index', $sponsorUser)->first();
+                    return response()->json(['sponsor_id' => $sponsorName->referral_code, 'sponsor_name' => $sponsorName->fullname]);
+                }
+            }
+            else{
+                $sponsorUser = User::where('parent_id', $referralUser->id)->where('id', '!=', null)->whereBetween('index', [6,10])->get()->max('index');
+                if(empty($sponsorUser))
+                {
+                    return response()->json(['sponsor_id' => $request->referral_code, 'sponsor_name' => $referralUser->fullname]);
+                }
+                else{
+                    $sponsorName = User::where('parent_id', $referralUser->id)->where('index', $sponsorUser)->first();
+                    return response()->json(['sponsor_id' => $sponsorName->referral_code, 'sponsor_name' => $sponsorName->fullname]);
+                }
+            }
         }
     }
 

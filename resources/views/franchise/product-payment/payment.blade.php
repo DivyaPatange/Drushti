@@ -50,40 +50,31 @@ tr.shown td.details-control:before{
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="header">
-                <h2 style="display:inline">Product Payment List</h2>
-                <div style="float:right;">
-                <a href="javascript:void(0)" style=" margin-left:20px"><button type="button" class="btn btn-primary waves-effect " data-toggle="modal" data-target="#smallModal">Add New</button></a>
-                <a href="{{ route('franchise.payment') }}" ><button type="button" class="btn btn-primary waves-effect ">Pay 7500</button></a>
-                </div>
+                <h2 style="display:inline">User Details</h2>
             </div>
             <div class="body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover js-basic-example dataTable" id="simpletable">
-                        <thead>
-                            <tr>
-                                <th>Sr. No.</th>
-                                <th>User Name</th>
-                                <th>Referral Code</th>
-                                <th>Amount</th>
-                                <th>Payment Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>Sr. No.</th>
-                                <th>User Name</th>
-                                <th>Referral Code</th>
-                                <th>Amount</th>
-                                <th>Payment Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            
-                        </tbody>
-                    </table>
-                </div>
+                <form method="POST" id="submitForm">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <span id="code_err" class="error"></span>
+                                    <input type="text" name="referral_code" class="form-control @error('referral_code') is-invalid @enderror" id="referral_code" placeholder="Enter Referral Code"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <table class="w-100 " id='users_info'>
+                                                        
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-success waves-effect" id="submitButton">Send OTP</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -93,21 +84,26 @@ tr.shown td.details-control:before{
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="smallModalLabel">Request Product</h4>
+                <h4 class="modal-title" id="smallModalLabel">Product Payment</h4>
             </div>
-            <form method="POST" id="submitForm">
+            <form method="POST" id="submitForm1">
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <div class="form-line">
-                                <span id="code_err" class="error"></span>
-                                <input type="text" name="referral_code" class="form-control @error('referral_code') is-invalid @enderror" id="referral_code" placeholder="Enter Referral Code"/>
+                                <span id="otp_err" class="error"></span>
+                                <input type="number" name="otp" class="form-control @error('otp') is-invalid @enderror" id="otp" placeholder="Enter OTP"/>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <h5 id="referral_name"></h5>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <span id="code_err" class="error"></span>
+                                <input type="hidden" name="referral_code" class="form-control @error('referral_code') is-invalid @enderror" id="referral_id" placeholder="Enter Referral Code"/>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -115,7 +111,7 @@ tr.shown td.details-control:before{
                         <div class="form-group">
                             <div class="form-line">
                                 <span id="amt_err" class="error"></span>
-                                <input type="number" name="product_amt" class="form-control @error('product_amt') is-invalid @enderror" id="product_amt" readonly value="3000" placeholder="Enter Product Amount"/>
+                                <input type="number" name="product_amt" class="form-control @error('product_amt') is-invalid @enderror" id="product_amt" readonly value="7500" placeholder="Enter Product Amount"/>
                             </div>
                         </div>
                     </div>
@@ -130,7 +126,7 @@ tr.shown td.details-control:before{
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success waves-effect" id="submitButton">Submit</button>
+                <button type="button" class="btn btn-success waves-effect" id="submitButton1">Submit</button>
                 <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">CLOSE</button>
             </div>
             </form>
@@ -169,33 +165,6 @@ tr.shown td.details-control:before{
 <!-- <script src="{{ asset('adminAsset/js/pages/index.js') }}"></script> -->
 
 <script>
-var SITEURL = "{{ route('franchise.product-payment')}}";
-$(document).ready(function() {
-    // $('#simpletable').DataTable().destroy();
-    var table = $('#simpletable').DataTable({
-        dom: 'Bfrtip',
-        responsive: true,
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ],
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: SITEURL,
-            type: 'GET',
-            // alert(data);
-        },
-        columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false,searchable: false},
-            { data: 'username', name: 'username' },
-            { data: 'referral_code', name: 'referral_code' },
-            { data: 'product_amount', name: 'product_amount' },
-            { data: 'payment_date', name: 'payment_date' },
-            { data: 'action', name: 'action' },
-        ],
-        order: [[0, 'desc']]
-    });
-})
 
 $(document).ready(function () {
     // keyup function looks at the keys typed on the search box
@@ -205,15 +174,15 @@ $(document).ready(function () {
         // call to an ajax function
         $.ajax({
             // assign a controller function to perform search action - route name is search
-            url:"{{ route('franchise.search') }}",
+            url:"{{ route('franchise.payment-search') }}",
             // since we are getting data methos is assigned as GET
             type:"GET",
             // data are sent the server
-            data:{'referral_code':query},
+            data:{'referral_info':query},
             // if search is succcessfully done, this callback function is called
             success:function (data) {
                 // print the search results in the div called country_list(id)
-                $('#referral_name').html(data);
+                $('#users_info').html(data);
             }
         })
         // end of ajax call
@@ -222,12 +191,51 @@ $(document).ready(function () {
 
 $('body').on('click', '#submitButton', function () {
     var referral_code = $("#referral_code").val();
-    var product_amt = $("#product_amt").val();
-    var payment_date = $("#payment_date").val();
+   
+
     if (referral_code=="") {
         $("#code_err").fadeIn().html("Required");
         setTimeout(function(){ $("#code_err").fadeOut(); }, 3000);
         $("#referral_code").focus();
+        return false;
+    }
+    else
+    { 
+        $.ajax({
+            type:"POST",
+            url:"{{ route('franchise.product-payment.send-otp') }}",
+            data:{referral_code:referral_code},
+            cache:false,        
+            success:function(returndata)
+            {
+                if(returndata.success){
+                toastr.success(returndata.success);
+                document.getElementById("submitForm").reset();
+                $("#users_info").empty();
+                $("#smallModal").modal('show');
+                $("#referral_id").val(returndata.referral_id);
+                }
+                else{
+                    document.getElementById("submitForm").reset();
+                    toastr.error(returndata.danger);
+                }
+            
+            // location.reload();
+            // $("#pay").val("");
+            }
+        });
+    }
+})
+
+$('body').on('click', '#submitButton1', function () {
+    var referral_code = $("#referral_id").val();
+    var otp = $("#otp").val();
+    var product_amt = $("#product_amt").val();
+    var payment_date = $("#payment_date").val();
+    if (otp=="") {
+        $("#otp_err").fadeIn().html("Required");
+        setTimeout(function(){ $("#otp_err").fadeOut(); }, 3000);
+        $("#otp").focus();
         return false;
     }
     if (payment_date=="") {
@@ -240,16 +248,13 @@ $('body').on('click', '#submitButton', function () {
     { 
         $.ajax({
             type:"POST",
-            url:"{{ route('franchise.product-payment.store') }}",
-            data:{referral_code:referral_code, product_amt:product_amt, payment_date:payment_date},
+            url:"{{ route('franchise.product-payment.submit') }}",
+            data:{otp:otp, referral_code:referral_code, product_amt:product_amt, payment_date:payment_date},
             cache:false,        
             success:function(returndata)
             {
-                document.getElementById("submitForm").reset();
+                document.getElementById("submitForm1").reset();
                 $("#smallModal").modal('hide');
-                $("#referral_name").empty();
-                var oTable = $('#simpletable').dataTable(); 
-                oTable.fnDraw(false);
                 if(returndata.success){
                 toastr.success(returndata.success);
                 }

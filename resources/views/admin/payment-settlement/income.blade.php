@@ -312,7 +312,7 @@ $('body').on('click', '#submitButton', function () {
             cache:false,        
             success:function(returndata)
             {
-                alert(returndata);
+                // alert(returndata);
                 document.getElementById("submitForm").reset();
                 var oTable = $('#simpletable').dataTable(); 
                 oTable.fnDraw(false);

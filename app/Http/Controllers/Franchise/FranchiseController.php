@@ -15,6 +15,7 @@ use App\Models\Admin\FranchiseKycdetails;
 use App\Models\Admin\FranchiseBankdetails;
 use App\Models\Admin\FranchiseShopdetails;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Franchise\Otp;
 
 class FranchiseController extends Controller
 {
@@ -302,5 +303,164 @@ class FranchiseController extends Controller
             'password_1' => $request->NewPassword,
         ]);
         return response()->json(['success' => 'Password Updated Successfully!']);
+    }
+
+    public function payment()
+    {
+        return view('franchise.product-payment.payment');
+    }
+
+    public function searchDistributorDetails(Request $request)
+    {
+        if($request->ajax()) {
+            // select country name from database
+            $data = DB::table('users')
+            ->where('referral_code', 'LIKE', $request->referral_info.'%')
+                ->get();
+                // dd($data);
+                
+        
+            // declare an empty array for output
+            $output = '';
+            // if searched countries count is larager than zero
+            // dd(!(isset($data)) || empty($data));
+            if(!(isset($data)) || empty($data))
+                {
+                    return array("error","Please Enter Valid Referral Code");
+                }
+            if (count($data)>0) {
+                // concatenate output to the array
+                // loop through the result array
+                foreach ($data as $row){
+                    // dd($request->referral_info == $row->referral_code);
+                    if($request->referral_info == $row->referral_code){
+                    // concatenate output to the array
+                    // dd($adminPayment->amount);
+                    $adminPayment = DB::table('admin_payments')->where('user_id', $row->id)->first();
+                    // dd($adminPayment);
+                    $rank = DB::table('rewards')->where('user_id', $row->id)->where('status', 'Qualified')->get();
+                    // dd($rank);
+                    $output .= '<tr>'.
+                    '<td>User Name</td>'.
+                    '<td><span style="color:green;font-size:15px;">'. $row->fullname.'</span></td>'.  
+                    '</tr>';
+                    if($adminPayment){
+                        $output .= '<tr>'.
+                        '<td>Admin Wallet</td>'.
+                        '<td><span style="color:green;font-size:15px;">'.$adminPayment->usergiven.'</span></td>'.  
+                        '</tr>';
+                    }
+                    // dd($output);
+                    if(count($rank) > 0){
+                        $output .= '<tr>'.
+                        '<td>Reward</td>';
+                        foreach($rank as $r)
+                        {
+                            $output .= '<td><span style="color:green;font-size:15px;">'. $r->net_income.'</span></td>';
+                        }
+                          
+                        $output .='</tr>';
+                    }
+                   
+                        
+                    
+                    }
+                }   
+                // end of output
+            }
+            
+            else {
+                // if there's no matching results according to the input
+                $output .= 'No results';
+            }
+            // return output result array
+            return $output;
+        }
+    }
+
+    public function sendOtp(Request $request)
+    {
+        $user = DB::table('users')->where('referral_code', $request->referral_code)->first();
+        $adminPayment = DB::table('admin_payments')->where('user_id',  $user->id)->first();
+        
+        $otp = mt_rand(100000,999999);
+        $otps = new Otp();
+        $otps->otp = $otp;
+        $otps->save();
+        $message = "Hello+".urlencode($user->fullname)."%0aYour+OTP+is:+".$otp."%0aRegards,+Market+Career+Power+Pvt.+Ltd.";
+        // dd($message);
+                    
+        $number = $user->mobile;
+
+        $this->sendSms1($message,$number);
+        return response()->json(['success' => 'OTP Send Successfully!', 'referral_id' => $request->referral_code]);
+    }
+
+    public function sendSms1($message,$number)
+    {
+        $url = 'http://sms.bulksmsind.in/v2/sendSMS?username=iceico&message='.$message.'&sendername=MRKTCP&smstype=TRANS&numbers='.$number.'&apikey=24ae8ae0-b514-499b-8baf-51d55808a2c4&peid=1201161909189905209&templateid=1207161976611807625';
+        $ch = curl_init();  
+        curl_setopt($ch,CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        curl_setopt($ch,CURLOPT_HEADER, false);
+    
+        $output=curl_exec($ch);
+    
+        curl_close($ch);
+    
+        return $output;
+    }
+
+    
+    public function submitProductPayment(Request $request)
+    {
+        $otp = $request->otp;
+        $user = User::where('referral_code', '=', $request->referral_code)->first();
+        $checkOtp = DB::table('otps')->where('otp', $otp)->first();
+        $productPayment = ProductPayment::where('referral_code', $request->referral_code)->where('product_amount', '=', 7500)->first();
+        // dd($checkOtp);
+        $product = DB::table('orders')->where('franchise_id', Auth::guard('franchise')->user()->id)->where('status', 1)->get()->sum('order_amt');
+        // dd($product);
+        $productPaymentAmount = DB::table('product_payments')->where('franchise_id', Auth::guard('franchise')->user()->id)->get()->sum('product_amount');
+        // dd($productPaymentAmount);
+        $balance = $product - $productPaymentAmount;
+        // dd($balance);
+        if($balance >= 7500)
+        {
+            if($checkOtp->status == 1)
+            {
+                return response()->json(['danger' => 'OTP is Already used!']);
+            }
+            else{   
+                if(empty($productPayment))
+                {
+                    // $date = date('Y-m-d H:i:s');
+                    $payment =  new ProductPayment();
+                    $payment->user_id = $user->id;
+                    $payment->franchise_id = Auth::guard('franchise')->user()->id;
+                    $payment->referral_code = $request->referral_code;
+                    $payment->product_amount = 7500;
+                    $payment->payment_date = date('Y-m-d',strtotime($request->payment_date));
+                    $payment->save();
+                    $message = "Hello+".urlencode($user->fullname)."%0aYour+Product+Payment+Done:+".$payment->product_amount."%0aRegards,+Market+Career+Power+Pvt.+Ltd.";
+                                
+                    $number = $user->mobile;
+            
+                    $this->sendSms($message,$number);
+                    $checkOtps = Otp::where('otp', $otp)->update(['status' => 1]);
+                    return response()->json(['success' => 'Product Payment Successfully Done!']);
+                }
+                else{
+                    return response()->json(['danger' => 'Payment is already Received.']);
+                } 
+            }
+        }
+        else{
+            return response()->json(['danger' => "Your Account doesn't have enough balance."]);
+        }
+        
     }
 }
