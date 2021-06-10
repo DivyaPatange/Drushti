@@ -20,6 +20,37 @@ use App\Http\Controllers\Auth\FranchiseRegisterController;
 |
 */
 
+Route::get('/clear-cache', function () {
+    $exitCode = Artisan::call('config:clear');
+    $exitCode = Artisan::call('cache:clear');
+    $exitCode = Artisan::call('config:cache');
+    return 'DONE'; //Return anything
+});
+
+Route::get('/migrate', function () {
+    $exitCode = Artisan::call('migrate');
+    return 'DONE'; //Return anything
+});
+Route::get('/make-model', function () {
+    $exitCode = Artisan::call('make:migration add_sub_parent_id_column');
+    return Artisan::output(); //Return anything
+});
+
+Route::get('/routeList', function () {
+    $exitCode = Artisan::call('route:list');
+    return Artisan::output(); //Return anything
+});
+
+Route::get('/seed', function () {
+    $exitCode = Artisan::call('db:seed');
+    return 'DONE'; //Return anything
+});
+
+//create symbolic link for storage
+Route::get('/symlink', function () {
+    return view('symlink');
+});
+
 Route::get('/', function () {
     return view('front.index');
 });
@@ -45,9 +76,9 @@ Route::get('plan', function () {
 Auth::routes();
 
 Route::post('/register/submit', [App\Http\Controllers\RegisterController::class, 'store'])->name('register.submit');
-Route::get('/search-sponsor', [App\Http\Controllers\RegisterController::class, 'searchSponsor'])->name('search.sponsor');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/search', [App\Http\Controllers\Auth\RegisterController::class, 'search'])->name('search');
+Route::get('/search-sponsor', [App\Http\Controllers\RegisterController::class, 'searchSponsor'])->name('search.sponsor');
 
 Route::prefix('admin')->name('admin.')->group(function() {
     Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
@@ -85,6 +116,9 @@ Route::prefix('distributor')->name('distributor.')->group(function() {
     Route::get('/search', [App\Http\Controllers\Distributor\DistributorController::class, 'search'])->name('search');
     Route::get('/search/sponsor', [App\Http\Controllers\Distributor\DistributorController::class, 'searchSponsor'])->name('search.sponsor');
     Route::get('/treeview', [App\Http\Controllers\Distributor\DistributorController::class, 'treeview'])->name('treeview');
+    Route::get('/welcomeLetter', [App\Http\Controllers\Distributor\DistributorController::class, 'welcomeLetter'])->name('welcomeLetter');
+    Route::get('/identityCard', [App\Http\Controllers\Distributor\DistributorController::class, 'identity'])->name('identityCard');
+    Route::get('my-business', [App\Http\Controllers\Distributor\DistributorController::class, 'myBusiness'])->name('my-business');
     Route::resource('/change-password', ChangePasswordController::class);
     Route::get('/kyc-document', [App\Http\Controllers\Distributor\DistributorController::class, 'kycDocument'])->name('kyc-document');
     Route::post('/kyc-document/upload', [App\Http\Controllers\Distributor\DistributorController::class, 'uploadKycDocument'])->name('kyc-document.upload');
@@ -115,7 +149,7 @@ Route::prefix('franchise')->name('franchise.')->group(function() {
     Route::get('/profile', [App\Http\Controllers\Franchise\FranchiseController::class, 'profile'])->name('profile');
     Route::post('/profile/update', [App\Http\Controllers\Franchise\FranchiseController::class, 'updateProfile'])->name('profile.update');
     Route::post('/password/update', [App\Http\Controllers\Franchise\FranchiseController::class, 'updatePassword'])->name('password.update');
-    Route::get('/payment', [App\Http\Controllers\Franchise\FranchiseController::class, 'payment'])->name('payment');
+     Route::get('/payment', [App\Http\Controllers\Franchise\FranchiseController::class, 'payment'])->name('payment');
     Route::get('/payment-search', [App\Http\Controllers\Franchise\FranchiseController::class, 'searchDistributorDetails'])->name('payment-search');
     Route::post('/send-otp', [App\Http\Controllers\Franchise\FranchiseController::class, 'sendOtp'])->name('product-payment.send-otp');
     Route::post('/product-payment/submit', [App\Http\Controllers\Franchise\FranchiseController::class, 'submitProductPayment'])->name('product-payment.submit');

@@ -805,4 +805,24 @@ class DistributorController extends Controller
             ->make(true);
         }
     }
+
+    public function welcomeLetter()
+    {
+       return view('distributor.welcomeLetter');
+    }
+    
+     public function identity()
+    {
+       return view('distributor.identityCard');
+    }
+
+    public function myBusiness()
+    {
+        $users = User::where('parent_id', Auth::user()->id)->get();
+        $allMenus = User::pluck('fullname', 'referral_code','id', 'index')->all();
+        // $currentJoiner = DB::table('users')->where('parent_id', Auth::user()->id)->join('product_payments', 'product_payments.user_id', '=');
+        $id = Auth::user()->id;
+        // dd($this->getUserLevel($id));
+        return view('distributor.my-business', compact('users', 'allMenus'))->with($this->getUserLevel($id));
+    }
 }

@@ -90,6 +90,24 @@
                 </ul> -->
             </li>
             <li>
+                <a href="{{ route('distributor.welcomeLetter') }}">
+                    <i class="material-icons">widgets</i>
+                    <span>Welcome Latter</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('distributor.identityCard') }}">
+                    <i class="material-icons">widgets</i>
+                    <span>Identity Card</span>
+                </a>
+            </li>
+             <li>
+                <a href="{{ route('distributor.my-business') }}">
+                    <i class="material-icons">update</i>
+                    <span>My Business</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('distributor.kyc-document') }}">
                     <i class="material-icons">swap_calls</i>
                     <span>KYC Document</span>
