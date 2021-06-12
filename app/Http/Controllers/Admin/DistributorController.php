@@ -89,6 +89,7 @@ class DistributorController extends Controller
         $user->parent_id = $request->parent_id;
         $user->referral_code = "MCP".$user->id;
         $user->reg_date = date('Y-m-d');
+        $user->sub_parent_id = 0;
         $user->save();
 
         $usersInfo = new UserInfo();
@@ -113,26 +114,12 @@ class DistributorController extends Controller
         $bankdetails->acc_holder_name = $request->acc_holder_name;
         $bankdetails->save();
 
-        for($i=1; $i <=5; $i++)
-        {
-            $user = new User();
-            $user->parent_id = $id;
-            $user->index = $i;
-            $user->save();
-        }
-        for($i=6; $i <=10; $i++)
-        {
-            $user = new User();
-            $user->parent_id = $id;
-            $user->index = $i;
-            $user->save();
-        }
         
         if($user->save()){
             $message = "Hello+".urlencode($request->fullname)."%0aWelcome+to+Market+Career+Power+Pvt.+Ltd."."%0aYour+Distributor+account+credentials+are+as+follows:%0aUsername:-+".$username."%0aPassword:-+".$request->password."%0aYou+can+login+to+your+distributor+account+here%0amarketcareerpower.com/login/";             
             $number = $request->mobile_no;
 
-            $this->sendSms($message,$number);    
+            // $this->sendSms($message,$number);    
     
     
             return redirect('admin/distributor')->with([

@@ -15,6 +15,8 @@ class AddIndexColumn extends Migration
     {
         Schema::table('users', function ($table) {
             $table->integer('index')->nullable();
+            $table->string('side')->nullable();
+            $table->string('sub_parent_id')->nullable();
         });
     }
 

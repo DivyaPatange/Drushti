@@ -27,7 +27,7 @@ class User extends Authenticatable
         'address',
         'password_1',
         'reg_date', 
-        'parent_id', 'index'
+        'parent_id', 'index', 'side', 'sub_parent_id'
     ];
 
     /**
