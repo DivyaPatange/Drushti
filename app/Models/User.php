@@ -27,7 +27,7 @@ class User extends Authenticatable
         'address',
         'password_1',
         'reg_date', 
-        'parent_id', 'index', 'side', 'sub_parent_id'
+        'parent_id', 'index', 'side', 'sub_parent_id', 'sponsor_id'
     ];
 
     /**
@@ -50,6 +50,6 @@ class User extends Authenticatable
     ];
 
     public function childs() {
-        return $this->hasMany('App\Models\User','parent_id','id') ;
+        return $this->hasMany('App\Models\User','sponsor_id','id') ;
     }
 }

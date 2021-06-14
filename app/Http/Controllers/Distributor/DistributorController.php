@@ -77,90 +77,179 @@ class DistributorController extends Controller
         $id = mt_rand(10000000,99999999);
         $user_referral_info = $request->user_referral;
         $data = User::where('referral_code',$user_referral_info )->first();
-        $users = User::where('parent_id', $data->id)->where('id', '!=', null)->get();
+        $users = User::where('parent_id', $data->id)->get();
         $sponsorUser = User::where('referral_code', $request->sponsor_id)->first();
         if(count($users) < 10){
-            if($user_referral_info == $request->sponsor_id)
+            $parentUser = User::where('id', $data->sub_parent_id)->first();
+            if(empty($parentUser))
             {
-                if($sponsorUser->sub_parent_id == 0){
+                $maxIndex = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->max('index');
+                // dd($maxIndex);
+                if(empty($maxIndex))
+                {
                     $index = 1;
-                    $sub_parent_id = $sponsorUser->id;
+                    $sub_parent_id = $data->id;
                 }
                 else{
-                    $maxIndex = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->max('index');
-                    if(empty($maxIndex))
-                    {
-                        $index = 1;
-                    }
-                    else{
-                        $index = $maxIndex + 1;
-                    }
-                    $sub_parent_id = $sponsorUser->id;
+                    $leftUser = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->where('index', $maxIndex)->first();
+                    $index = $maxIndex + 1;
+                    $sub_parent_id = $leftUser->sub_parent_id;
                 }
             }
             else{
-                if(empty($sponsorUser->index))
+                $checkSide = $parentUser->side;
+                if(empty($checkSide))
                 {
-                    $index = 1;
+                    if($request->join_side == $data->side)
+                    {
+                        $maxIndex = User::where('sub_parent_id', $parentUser->id)->where('side', $request->join_side)->max('index');
+                        if(empty($maxIndex))
+                        {
+                            $index = 1;
+                            $sub_parent_id = $parentUser->id;
+                        }
+                        else{
+                            $leftUser = User::where('sub_parent_id', $parentUser->id)->where('side', $request->join_side)->where('index', $maxIndex)->first();
+                            $index = $maxIndex + 1;
+                            $sub_parent_id = $parentUser->id;
+                        }
+                    }
+                    else{
+                        $maxIndex = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->max('index');
+                        if(empty($maxIndex)){
+                            $index = 1;
+                            $sub_parent_id = $data->id;
+                        }
+                        else{
+                            $leftUser = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->where('index', $maxIndex)->first();
+                            $index = $maxIndex + 1;
+                            $sub_parent_id = $leftUser->sub_parent_id;
+                        }
+                    }  
+                }
+                elseif($checkSide == $data->side){
+                    if($request->join_side == $data->side)
+                    {
+                        $maxIndex = User::where('sub_parent_id', $parentUser->sub_parent_id)->where('side', $request->join_side)->max('index');
+                        if(empty($maxIndex))
+                        {
+                            $index = 1;
+                            $sub_parent_id = $parentUser->sub_parent_id;
+                        }
+                        else{
+                            $leftUser = User::where('sub_parent_id', $parentUser->sub_parent_id)->where('side', $request->join_side)->where('index', $maxIndex)->first();
+                            $index = $maxIndex + 1;
+                            $sub_parent_id = $parentUser->sub_parent_id;
+                        }
+                    }
+                    else{
+                        $maxIndex = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->max('index');
+                        if(empty($maxIndex)){
+                            $index = 1;
+                            $sub_parent_id = $data->id;
+                        }
+                        else{
+                            $leftUser = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->where('index', $maxIndex)->first();
+                            $index = $maxIndex + 1;
+                            $sub_parent_id = $leftUser->sub_parent_id;
+                        }
+                    } 
                 }
                 else{
-                    $index = $sponsorUser->index + 1;
+                    if($request->join_side == $data->side)
+                    {
+                        $maxIndex = User::where('sub_parent_id', $parentUser->id)->where('side', $request->join_side)->max('index');
+                        if(empty($maxIndex))
+                        {
+                            $index = 1;
+                            $sub_parent_id = $parentUser->id;
+                        }
+                        else{
+                            $leftUser = User::where('sub_parent_id', $parentUser->id)->where('side', $request->join_side)->where('index', $maxIndex)->first();
+                            $index = $maxIndex + 1;
+                            $sub_parent_id = $parentUser->id;
+                        }
+                    }
+                    else{
+                        $maxIndex = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->max('index');
+                        if(empty($maxIndex)){
+                            $index = 1;
+                            $sub_parent_id = $data->id;
+                        }
+                        else{
+                            $leftUser = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->where('index', $maxIndex)->first();
+                            $index = $maxIndex + 1;
+                            $sub_parent_id = $leftUser->sub_parent_id;
+                        }
+                    }
                 }
-                $sub_parent_id = $sponsorUser->sub_parent_id;
             }
-            $user = User::create([
-                'id' => $id,
-                'fullname' => $request->fullname,
-                'email' => $request->email,
-                'username' => "MCP".$id,
-                'mobile' => $request->mobile_no,
-                'address' => $request->address,
-                'password' => Hash::make($request->password),
-                'password_1' => $request->password,
-                'referral_code' => "MCP".$id,
-                'reg_date' => date("Y-m-d"),
-                'index' => $index,
-                'parent_id' => $data->id,
-                'side' => $request->join_side,
-                'sub_parent_id' => $sub_parent_id,
-            ]);
+            $sideUser = User::where('parent_id', $data->id)->where('side', $request->join_side)->get();
+            if(count($sideUser) < 5){
+                $user = User::create([
+                    'id' => $id,
+                    'fullname' => $request->fullname,
+                    'email' => $request->email,
+                    'username' => "MCP".$id,
+                    'mobile' => $request->mobile_no,
+                    'address' => $request->address,
+                    'password' => Hash::make($request->password),
+                    'password_1' => $request->password,
+                    'referral_code' => "MCP".$id,
+                    'reg_date' => date("Y-m-d"),
+                    'index' => $index,
+                    'parent_id' => $data->id,
+                    'side' => $request->join_side,
+                    'sub_parent_id' => $sub_parent_id,
+                    'sponsor_id' => $sponsorUser->id,
+                ]);
+                $usersInfo = new UserInfo();
+                $usersInfo->user_id = $id;
+                $usersInfo->nominee_name = $request->nominee_name;
+                $usersInfo->nominee_relation = $request->nominee_relation;
+                $usersInfo->save();
 
-            $usersInfo = new UserInfo();
-            $usersInfo->user_id = $id;
-            $usersInfo->nominee_name = $request->nominee_name;
-            $usersInfo->nominee_relation = $request->nominee_relation;
-            $usersInfo->save();
+                $kycdetails = new UserKycDetail();
+                $kycdetails->user_id = $id;
+                $kycdetails->pan_no = $request->pan_no;
+                $kycdetails->aadhar_no = $request->aadhar_no;
+                $kycdetails->save();
+            
+                $bankdetails = new UserBankDetail();
+                $bankdetails->user_id = $id;
+                $bankdetails->bank_name = $request->bank_name;
+                $bankdetails->branch_name = $request->branch_name;
+                $bankdetails->ifsc_code = $request->ifsc_code;
+                $bankdetails->acc_no = $request->acc_no;
+                $bankdetails->acc_holder_name = $request->acc_holder_name;
+                $bankdetails->save();
 
-            $kycdetails = new UserKycDetail();
-            $kycdetails->user_id = $id;
-            $kycdetails->pan_no = $request->pan_no;
-            $kycdetails->aadhar_no = $request->aadhar_no;
-            $kycdetails->save();
+                if($bankdetails->save()){
+                    $username = "MCP".$id;
+                    $message = "Hello+".urlencode($request->fullname)."%0aWelcome+to+Market+Career+Power+Pvt.+Ltd."."%0aYour+Distributor+account+credentials+are+as+follows:%0aUsername:-+".$username."%0aPassword:-+".$request->password."%0aYou+can+login+to+your+distributor+account+here%0amarketcareerpower.com/login/";
+                                
+                    $number = $request->mobile_no;
         
-            $bankdetails = new UserBankDetail();
-            $bankdetails->user_id = $id;
-            $bankdetails->bank_name = $request->bank_name;
-            $bankdetails->branch_name = $request->branch_name;
-            $bankdetails->ifsc_code = $request->ifsc_code;
-            $bankdetails->acc_no = $request->acc_no;
-            $bankdetails->acc_holder_name = $request->acc_holder_name;
-            $bankdetails->save();
-
-            if($bankdetails->save()){
-                $username = "MCP".$id;
-                $message = "Hello+".urlencode($request->fullname)."%0aWelcome+to+Market+Career+Power+Pvt.+Ltd."."%0aYour+Distributor+account+credentials+are+as+follows:%0aUsername:-+".$username."%0aPassword:-+".$request->password."%0aYou+can+login+to+your+distributor+account+here%0amarketcareerpower.com/login/";
-                            
-                $number = $request->mobile_no;
-    
-                // $this->sendSms($message,$number); 
-                // dd($this->sendSms($message,$number)); 
-            return redirect('/distributor/joiners')->with([
-                'user' => $user,
-                'kycdetails' => $kycdetails,
-                'bankdetails' => $bankdetails,
-                'usersInfo' => $usersInfo,
-            ])->with('success', 'Joiner Added Successfully!');
-            }  
+                    // $this->sendSms($message,$number); 
+                    // dd($this->sendSms($message,$number)); 
+                    return redirect('/distributor/joiners')->with([
+                        'user' => $user,
+                        'kycdetails' => $kycdetails,
+                        'bankdetails' => $bankdetails,
+                        'usersInfo' => $usersInfo,
+                    ])->with('success', 'Joiner Added Successfully!');
+                }  
+            }
+            else{
+                if($request->join_side == "L")
+                {
+                    $side = "Left";
+                }
+                else{
+                    $side = "Right";
+                }
+                return Redirect::back()->with('danger', 'You cannot add more than 5 joiners on '.$side.' side.');
+            }
         }
         else{
             
@@ -173,13 +262,13 @@ class DistributorController extends Controller
         if($request->ajax()) {
             // select country name from database
             $referralUser = User::where('referral_code', $request->referral_code)->first();
-            if($referralUser->sub_parent_id == 0)
+            $parentUser = User::where('id', $referralUser->sub_parent_id)->first();
+            if(empty($parentUser))
             {
                 $maxIndex = User::where('sub_parent_id', $referralUser->id)->where('side', $request->side)->max('index');
-                // return $user;
                 if(empty($maxIndex))
                 {
-                    return response()->json(['sponsor_id' => $request->referral_code, 'sponsor_name' => $referralUser->fullname]);
+                    return response()->json(['sponsor_id' => $referralUser->referral_code, 'sponsor_name' => $referralUser->fullname]);
                 }
                 else{
                     $user = User::where('sub_parent_id', $referralUser->id)->where('side', $request->side)->where('index', $maxIndex)->first();
@@ -187,56 +276,80 @@ class DistributorController extends Controller
                 }
             }
             else{
-                $parentUser = User::where('id', $referralUser->sub_parent_id)->first();
                 $checkSide = $parentUser->side;
-                if($checkSide == $referralUser->side)
+                if(empty($checkSide))
                 {
-                    $maxIndex = User::where('sub_parent_id', $parentUser->sub_parent_id)->where('side', $request->side)->max('index');
-                    // return $maxIndex;
-                    if(empty($maxIndex))
+                    if($request->side == $referralUser->side)
                     {
-                        return response()->json(['sponsor_id' => $referralUser->referral_code, 'sponsor_name' => $referralUser->fullname]);
-                    }
-                    else{
-                        $leftUser = User::where('sub_parent_id', $parentUser->sub_parent_id)->where('side', $request->side)->where('index', $maxIndex)->first();
-                        return response()->json(['sponsor_id' => $leftUser->referral_code, 'sponsor_name' => $leftUser->fullname]);
-                    }
-                }
-                elseif($checkSide != $referralUser->side)
-                {
-                    $maxIndex = User::where('sub_parent_id', $referralUser->sub_parent_id)->where('side', $request->side)->max('index');
-                    if(empty($maxIndex))
-                    {
-                        return response()->json(['sponsor_id' => $referralUser->referral_code, 'sponsor_name' => $referralUser->fullname]);
-                    }
-                    else{
-                        $rightUser = User::where('sub_parent_id', $referralUser->sub_parent_id)->where('side', $request->side)->where('index', $maxIndex)->first();
-                        return response()->json(['sponsor_id' => $rightUser->referral_code, 'sponsor_name' => $rightUser->fullname]);
-                    }
-                }
-                else{
-                    $userSide = $referralUser->side;
-                    if($request->side == $userSide)
-                    {
-                        $maxIndex = User::where('sub_parent_id', $referralUser->sub_parent_id)->where('side', $request->side)->max('index');
+                        $maxIndex = User::where('sub_parent_id', $parentUser->id)->where('side', $request->side)->max('index');
                         if(empty($maxIndex))
                         {
-                            return response()->json(['sponsor_id' => $referralUser->referral_code, 'sponsor_name' => $referralUser->fullname]); 
+                            return response()->json(['sponsor_id' => $referralUser->referral_code, 'sponsor_name' => $referralUser->fullname]);
                         }
                         else{
-                            $user = User::where('sub_parent_id', $referralUser->sub_parent_id)->where('side', $request->side)->where('index', $maxIndex)->first(); 
-                            return response()->json(['sponsor_id' => $user->referral_code, 'sponsor_name' => $user->fullname]); 
+                            $user = User::where('sub_parent_id', $parentUser->id)->where('side', $request->side)->where('index', $maxIndex)->first();
+                            // return $user->fullname;
+                            return response()->json(['sponsor_id' => $user->referral_code, 'sponsor_name' => $user->fullname]);
                         }
                     }
                     else{
                         $maxIndex = User::where('sub_parent_id', $referralUser->id)->where('side', $request->side)->max('index');
-                        if(empty($maxIndex))
-                        {
-                            return response()->json(['sponsor_id' => $referralUser->referral_code, 'sponsor_name' => $referralUser->fullname]); 
+                        if(empty($maxIndex)){
+                            return response()->json(['sponsor_id' => $referralUser->referral_code, 'sponsor_name' => $referralUser->fullname]);
                         }
                         else{
-                            $user = User::where('sub_parent_id', $referralUser->id)->where('side', $request->side)->where('index', $maxIndex)->first(); 
-                            return response()->json(['sponsor_id' => $user->referral_code, 'sponsor_name' => $user->fullname]); 
+                            $user = User::where('sub_parent_id', $referralUser->id)->where('side', $request->side)->where('index', $maxIndex)->first();
+                            return response()->json(['sponsor_id' => $user->referral_code, 'sponsor_name' => $user->fullname]);
+                        }
+                    }
+                }
+                elseif($checkSide == $referralUser->side){
+                    if($request->side == $referralUser->side)
+                    {
+                        $maxIndex = User::where('sub_parent_id', $parentUser->sub_parent_id)->where('side', $request->side)->max('index');
+                        if(empty($maxIndex))
+                        {
+                            return response()->json(['sponsor_id' => $referralUser->referral_code, 'sponsor_name' => $referralUser->fullname]);
+                        }
+                        else{
+                            $user = User::where('sub_parent_id', $parentUser->sub_parent_id)->where('side', $request->side)->where('index', $maxIndex)->first();
+                            return response()->json(['sponsor_id' => $user->referral_code, 'sponsor_name' => $user->fullname]);
+                        }
+                    }
+                    else{
+                        $maxIndex = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->max('index');
+                        if(empty($maxIndex)){
+                            $index = 1;
+                            $sub_parent_id = $data->id;
+                        }
+                        else{
+                            $leftUser = User::where('sub_parent_id', $data->id)->where('side', $request->join_side)->where('index', $maxIndex)->first();
+                            $index = $maxIndex + 1;
+                            $sub_parent_id = $leftUser->sub_parent_id;
+                        }
+                    } 
+                }
+                else{
+                    if($request->side == $referralUser->side)
+                    {
+                        $maxIndex = User::where('sub_parent_id', $parentUser->id)->where('side', $request->side)->max('index');
+                        if(empty($maxIndex))
+                        {
+                            return response()->json(['sponsor_id' => $referralUser->referral_code, 'sponsor_name' => $referralUser->fullname]);
+                        }
+                        else{
+                            $user = User::where('sub_parent_id', $parentUser->id)->where('side', $request->side)->where('index', $maxIndex)->first();
+                            return response()->json(['sponsor_id' => $user->referral_code, 'sponsor_name' => $user->fullname]);
+                        }
+                    }
+                    else{
+                        $maxIndex = User::where('sub_parent_id', $referralUser->id)->where('side', $request->side)->max('index');
+                        if(empty($maxIndex)){
+                            return response()->json(['sponsor_id' => $referralUser->referral_code, 'sponsor_name' => $referralUser->fullname]);
+                        }
+                        else{
+                            $user = User::where('sub_parent_id', $referralUser->id)->where('side', $request->side)->where('index', $maxIndex)->first();
+                            return response()->json(['sponsor_id' => $user->referral_code, 'sponsor_name' => $user->fullname]);
                         }
                     }
                 }

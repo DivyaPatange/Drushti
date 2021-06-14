@@ -17,6 +17,7 @@ class AddIndexColumn extends Migration
             $table->integer('index')->nullable();
             $table->string('side')->nullable();
             $table->string('sub_parent_id')->nullable();
+            $table->string('sponsor_id')->nullable();
         });
     }
 
@@ -29,6 +30,9 @@ class AddIndexColumn extends Migration
     {
         Schema::table('users', function ($table) {
             $table->dropColumn('index');
+            $table->dropColumn('side');
+            $table->dropColumn('sub_parent_id');
+            $table->dropColumn('sponsor_id');
         });
     }
 }

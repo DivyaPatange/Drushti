@@ -90,6 +90,7 @@ class DistributorController extends Controller
         $user->referral_code = "MCP".$user->id;
         $user->reg_date = date('Y-m-d');
         $user->sub_parent_id = 0;
+        $user->sponsor_id = 0;
         $user->save();
 
         $usersInfo = new UserInfo();
@@ -253,7 +254,7 @@ class DistributorController extends Controller
 
     public function companyTree()
     {
-        $users = User::where('parent_id', '=', 0)->get();
+        $users = User::where('sponsor_id', '=', 0)->get();
         $allMenus = User::pluck('fullname', 'referral_code','id', 'index')->all();
         return view('admin.company-tree.index', compact('users', 'allMenus'));
     }
