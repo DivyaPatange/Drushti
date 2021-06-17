@@ -230,8 +230,8 @@ class DistributorController extends Controller
                                 
                     $number = $request->mobile_no;
         
-                    // $this->sendSms($message,$number); 
-                    // dd($this->sendSms($message,$number)); 
+                    $this->sendSms($message,$number); 
+                    dd($this->sendSms($message,$number)); 
                     return redirect('/distributor/joiners')->with([
                         'user' => $user,
                         'kycdetails' => $kycdetails,

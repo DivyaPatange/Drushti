@@ -120,8 +120,8 @@ class DistributorController extends Controller
             $message = "Hello+".urlencode($request->fullname)."%0aWelcome+to+Market+Career+Power+Pvt.+Ltd."."%0aYour+Distributor+account+credentials+are+as+follows:%0aUsername:-+".$username."%0aPassword:-+".$request->password."%0aYou+can+login+to+your+distributor+account+here%0amarketcareerpower.com/login/";             
             $number = $request->mobile_no;
 
-            // $this->sendSms($message,$number);    
-    
+            $this->sendSms($message,$number);    
+            // dd($this->sendSms($message,$number));
     
             return redirect('admin/distributor')->with([
                 'user' => $user,
@@ -255,7 +255,7 @@ class DistributorController extends Controller
     public function companyTree()
     {
         $users = User::where('sponsor_id', '=', 0)->get();
-        $allMenus = User::pluck('fullname', 'referral_code','id', 'index')->all();
+        $allMenus = User::pluck('fullname', 'referral_code','id', 'side')->all();
         return view('admin.company-tree.index', compact('users', 'allMenus'));
     }
 
