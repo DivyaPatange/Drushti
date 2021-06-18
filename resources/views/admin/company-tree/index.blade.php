@@ -46,34 +46,6 @@
 @section('content')
 <!-- Exportable Table -->
 <div class="row clearfix">
-    <div class="col-lg-12 col-md-12">
-        <div class="card">
-            <div class="body">
-                <?php
-                    $cols = 4;
-                    $lines = pow(2,$cols);
-                    // dd($lines);
-                    echo '<table border=1 style="border:1px solid black;">';
-                    
-                        for($i = 0; $i < $lines; $i++){
-                            echo '<tr>';
-                                for($j = 0; $j < $cols; $j++){
-                                    $rowspan = $lines/pow(2,$j+1);
-                                        if(0 === $i%$rowspan) {
-                                             echo "<td rowspan='$rowspan'>".
-                                                 ($i/$rowspan + pow(2,$j+1)-1).
-                                             "</td>";
-                                        }
-                                }
-                        }
-                    
-                    echo '</table>';
-                ?>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="header">

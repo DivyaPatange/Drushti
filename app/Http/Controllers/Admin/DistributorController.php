@@ -255,6 +255,7 @@ class DistributorController extends Controller
     public function companyTree()
     {
         $users = User::where('sponsor_id', '=', 0)->get();
+        // dd($users);
         $allMenus = User::pluck('fullname', 'referral_code','id', 'side')->all();
         return view('admin.company-tree.index', compact('users', 'allMenus'));
     }

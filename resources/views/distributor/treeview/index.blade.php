@@ -49,7 +49,7 @@
             </div>
             <div class="body">
                 <div class="tf-tree example">
-                    <ul id="Decor">
+                    <ul>
                         <li>
                             <span class="tf-nc">
                                 <i class="fas fa-atom" style="font-size:25px;"></i>
@@ -58,7 +58,24 @@
                                 <br>
                                 {{Auth::user()->referral_code}}
                             </span>
-                            
+                            <ul id="Decor">
+                            @foreach($users as $user)
+                                <li>
+                                
+                                    <span class="tf-nc" style="font-size:15px;">
+                                        <a href="#">
+                                            <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
+                                        <br>
+                                        {{ $user->fullname }}
+                                        <br>
+                                        {{ $user->referral_code }}
+                                        </span>
+                                    @if(count($user->childs))
+                                        @include('admin.company-tree.manageChild',['childs' => $user->childs])                                                
+                                    @endif
+                                </li>
+                            @endforeach
+                            </ul>
                         </li>
                     </ul>
                 </div>

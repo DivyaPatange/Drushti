@@ -498,8 +498,8 @@ class DistributorController extends Controller
 
     public function treeview()
     {
-        $users = User::where('parent_id', '=', Auth::user()->id)->get();
-        $allMenus = User::pluck('fullname', 'referral_code','id', 'index')->all();
+        $users = User::where('sponsor_id', '=', Auth::user()->id)->get();
+        $allMenus = User::pluck('fullname', 'referral_code','id', 'side')->all();
         
         return view('distributor.treeview.index',compact('users','allMenus'));
     }
