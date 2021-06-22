@@ -16,7 +16,7 @@
             {{ $child->referral_code }}
             </span>
             @if(count($child->childs))
-                @include('admin.company-tree.manageChild',['childs' => $child->childs])                                                
+                @include('distributor.treeview.manageChild',['childs' => $child->childs])                                                
             @endif
         </li>
         <li style="visibility:hidden">
@@ -45,7 +45,7 @@
                 {{ $child->referral_code }}
                 </span>
             @if(count($child->childs))
-                @include('admin.company-tree.manageChild',['childs' => $child->childs])                                                
+                @include('distributor.treeview.manageChild',['childs' => $child->childs])                                                
             @endif
         </li>
         @endif

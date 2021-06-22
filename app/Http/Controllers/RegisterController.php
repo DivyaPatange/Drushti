@@ -21,7 +21,7 @@ class RegisterController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_referral' => 'required',
+            'referral_code' => 'required',
             'fullname' => 'required',
             'mobile_no' => 'required|digits:10',
             'address' => 'required',
@@ -30,7 +30,7 @@ class RegisterController extends Controller
             'sponsor_id' => 'required',
         ]);
         $id = mt_rand(10000000,99999999);
-        $user_referral_info = $request->user_referral;
+        $user_referral_info = $request->referral_code;
         $data = User::where('referral_code',$user_referral_info )->first();
         $users = User::where('parent_id', $data->id)->get();
         $sponsorUser = User::where('referral_code', $request->sponsor_id)->first();

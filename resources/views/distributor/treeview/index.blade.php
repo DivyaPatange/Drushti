@@ -20,23 +20,23 @@
 }
 .tf-tree li li:before{
     border-top:.0625em solid ##0f0e0e;
-    left:-1.2125em;
-    width:128%;
+    /* left:-1.2125em;
+    width:128%; */
 }
 .tf-tree{
     text-align:center;
 }
-.double{
+/* .double{
     -moz-column-count: 10;
     -moz-column-gap: 0px;
     -webkit-column-count: 10;
     -webkit-column-gap: 0px;
     column-count: 10;
     column-gap: 0px;
-}
-.tf-tree li{
+} */
+/* .tf-tree li{
     left:12px;
-}
+} */
 </style>
 @endsection
 @section('content')
@@ -58,10 +58,63 @@
                                 <br>
                                 {{Auth::user()->referral_code}}
                             </span>
+                            @if(count($users) == 1)
                             <ul id="Decor">
-                            @foreach($users as $user)
-                                <li>
+                                @foreach($users->sortBy('side') as $key => $user)
+                                    @if($key == 0)
+                                        @if($user->side  == "L")
+                                        <li>
+                                            <span class="tf-nc" style="font-size:15px;">
+                                            <a href="#">
+                                                <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
+                                            <br>
+                                            {{ $user->fullname }}
+                                            <br>
+                                            {{ $user->referral_code }}
+                                            </span>
+                                            @if(count($user->childs))
+                                                @include('distributor.treeview.manageChild',['childs' => $user->childs])                                                
+                                            @endif
+                                        </li>
+                                        <li style="visibility:hidden">
+                                                                    
+                                            <span class="tf-nc" style="font-size:15px;">
+                                                <a href="#">
+                                                    <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
+                                                <br>
+                                        </li>
+                                        @else
+                                        <li style="visibility:hidden">
+                                                                    
+                                            <span class="tf-nc" style="font-size:15px;">
+                                                <a href="#">
+                                                    <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
+                                                <br>
+                                        </li>
+                                        <li>
+                                                                    
+                                            <span class="tf-nc" style="font-size:15px;">
+                                                <a href="#">
+                                                    <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
+                                                <br>
+                                                {{ $user->fullname }}
+                                                <br>
+                                                {{ $user->referral_code }}
+                                                </span>
+                                            @if(count($user->childs))
+                                                @include('distributor.treeview.manageChild',['childs' => $user->childs])                                                
+                                            @endif
+                                        </li>
+                                        @endif
+                                    @endif
+                                @endforeach
+                            </ul>
+                            @else
+                            <ul id="Decor">
+                                @foreach($users->sortBy('side') as $key => $user)
                                 
+                                <li>
+                                                                
                                     <span class="tf-nc" style="font-size:15px;">
                                         <a href="#">
                                             <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
@@ -71,11 +124,12 @@
                                         {{ $user->referral_code }}
                                         </span>
                                     @if(count($user->childs))
-                                        @include('admin.company-tree.manageChild',['childs' => $user->childs])                                                
+                                        @include('distributor.treeview.manageChild',['childs' => $user->childs])                                                
                                     @endif
                                 </li>
-                            @endforeach
+                                @endforeach
                             </ul>
+                            @endif
                         </li>
                     </ul>
                 </div>
