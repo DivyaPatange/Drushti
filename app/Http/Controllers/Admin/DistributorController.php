@@ -479,35 +479,35 @@ class DistributorController extends Controller
                 if(!empty($levelPayment)){
                     $items[] = $levelPayment->payment_date;
                 }
-                foreach($user->childs as $child)
+                foreach($user->user_childs as $child)
                 {
                     if(!empty($child->id)){
                         $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
                         if(!empty($levelPayment1)){
                             $items1[] = $levelPayment1->payment_date;
                         }
-                        foreach($child->childs as $child)
+                        foreach($child->user_childs as $child)
                         {
                             if(!empty($child->id)){
                                 $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
                                 if(!empty($levelPayment2)){
                                     $items2[] = $levelPayment2->payment_date;
                                 }
-                                foreach($child->childs as $child)
+                                foreach($child->user_childs as $child)
                                 {
                                     if(!empty($child->id)){
                                         $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
                                         if(!empty($levelPayment3)){
                                             $items3[] = $levelPayment3->payment_date;
                                         }
-                                        foreach($child->childs as $child)
+                                        foreach($child->user_childs as $child)
                                         {
                                             if(!empty($child->id)){
                                                 $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
                                                 if(!empty($levelPayment4)){
                                                     $items4[] = $levelPayment4->payment_date;
                                                 }
-                                                foreach($child->childs as $child)
+                                                foreach($child->user_childs as $child)
                                                 {
                                                     if(!empty($child->id)){
                                                         $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();

@@ -45,7 +45,6 @@ $items5 = $val['items5'];
 ?>
 <ul style="display:none"> 
     @foreach($users as $key => $user)
-    @if(!empty($user->id))
     <li>
         <?php
             $payment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
@@ -114,10 +113,9 @@ $items5 = $val['items5'];
             }
         ?>
         @if(count($user->childs))
-            @include('admin.company-tree.child',['childs' => $user->childs])
+            @include('admin.company-tree.child',['user_childs' => $user->user_childs])
         @endif
     </li>
-    @endif
     @endforeach
 </ul>
 @endforeach
@@ -312,7 +310,7 @@ $('body').on('click', '#submitButton', function () {
             cache:false,        
             success:function(returndata)
             {
-                // alert(returndata);
+                alert(returndata);
                 document.getElementById("submitForm").reset();
                 var oTable = $('#simpletable').dataTable(); 
                 oTable.fnDraw(false);

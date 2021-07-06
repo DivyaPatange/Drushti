@@ -5,9 +5,8 @@ use App\Models\User\Reward;
 
 ?>
 <ul>
-@foreach($childs as $child)
+@foreach($user_childs as $child)
 @if($loop->depth <= 7)
-    @if(!empty($child->id))
     <li>
     <?php
             $payment = DB::table('product_payments')->where('user_id', $child->id)->where('product_amount', 3000)->first();
@@ -137,10 +136,9 @@ use App\Models\User\Reward;
         ?>
         
         @if(count($child->childs))
-            @include('admin.company-tree.child',['childs' => $child->childs])
+            @include('admin.company-tree.child',['user_childs' => $child->user_childs])
         @endif
     </li>
-    @endif
 @endif
 @endforeach
 </ul>

@@ -52,4 +52,8 @@ class User extends Authenticatable
     public function childs() {
         return $this->hasMany('App\Models\User','sponsor_id','id') ;
     }
+
+    public function user_childs() {
+        return $this->hasMany('App\Models\User','parent_id','id') ;
+    }
 }

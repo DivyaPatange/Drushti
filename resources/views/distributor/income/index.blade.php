@@ -21,7 +21,7 @@ use App\Models\User\Reward;
 <!-- Widgets -->
 <ul style="display:none"> 
     @foreach($users as $key => $user)
-    @if(!empty($user->id))
+    
     <li>
         <?php
             $payment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
@@ -88,10 +88,9 @@ use App\Models\User\Reward;
             }
         ?>
         @if(count($user->childs))
-            @include('distributor.treeview.child',['childs' => $user->childs])
+            @include('distributor.treeview.child',['user_childs' => $user->user_childs])
         @endif
     </li>
-    @endif
     @endforeach
 </ul>
 <div class="row clearfix">

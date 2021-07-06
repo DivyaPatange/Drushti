@@ -116,7 +116,7 @@ $items5 = $val['items5'];
             }
         ?>
         @if(count($user->childs))
-            @include('admin.company-tree.child',['childs' => $user->childs])
+            @include('admin.company-tree.child',['user_childs' => $user->user_childs])
         @endif
     </li>
     @endif

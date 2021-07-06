@@ -93,8 +93,13 @@ use App\Models\User\Reward;
                 <i class="material-icons">playlist_add_check</i>
             </div>
             <div class="content">
+                @if(empty($userProductPayment))
+                <div class="text">Product Payment</div>
+                <div class="">Pending</div>
+                @else
                 <div class="text">Product Amount</div>
-                <div class="number count-to" data-from="0" data-to="2500" data-speed="1000" data-fresh-interval="20"></div>
+                <div class="number count-to" data-from="0" data-to="{{ $userProductPayment->product_amount }}" data-speed="1000" data-fresh-interval="20"></div>
+                @endif
             </div>
         </div>
     </div>
@@ -116,7 +121,11 @@ use App\Models\User\Reward;
             </div>
             <div class="content">
                 <div class="text">Reward</div>
-                <div class="number count-to" data-from="0" data-to="2500" data-speed="1000" data-fresh-interval="20"></div>
+                @if(count($reward) > 0)
+                <div class="number count-to" data-from="0" data-to="{{ $reward->sum('net_income') }}" data-speed="1000" data-fresh-interval="20"></div>
+                @else
+                <div class="number count-to" data-from="0" data-to="0" data-speed="1000" data-fresh-interval="20"></div>
+                @endif
             </div>
         </div>
     </div>
