@@ -422,6 +422,7 @@ class DistributorController extends Controller
         $user->email = $request->email;
         $user->mobile = $request->mobile;
         $user->address = $request->address;
+        $user->referral_code = $request->referral_code;
         $user->update($request->all());
 
         $usersInfo = UserInfo::where('user_id', $id)->first();

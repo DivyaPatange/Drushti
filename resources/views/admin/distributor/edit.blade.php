@@ -16,7 +16,7 @@
                 {{ csrf_field() }}
                 @method('PUT')
                     <div class="row clearfix">
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 <div class="form-line">
                                     <input type="text" name="fullname" class="form-control @error('fullname') is-invalid @enderror" placeholder="Fullname" value="{{ $user->fullname }}"/>
@@ -28,12 +28,24 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 <div class="form-line">
                                     <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email" value="{{ $user->email }}"/>
                                 </div>
                                 @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" name="referral_code" class="form-control @error('referral_code') is-invalid @enderror" placeholder="Referral No." value="{{ $user->referral_code }}"/>
+                                </div>
+                                @error('referral_code')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
