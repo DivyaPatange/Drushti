@@ -5,7 +5,7 @@ use App\Models\User\Reward;
 
 ?>
 <ul>
-@foreach($childs as $child)
+@foreach($user_childs as $child)
 @if($loop->depth <= 6)
     @if(!empty($child->id))
     <li>
@@ -118,7 +118,7 @@ use App\Models\User\Reward;
                         $reward->admin_charges = 0.1 * ($reward->reward_amt);
                         $reward->net_income = $reward->reward_amt - $reward->admin_charges;
                         $reward->status = "Not Qualified";
-                        $reward->date = max($date);
+                        $reward->date = $date;
                         $reward->save();
                     }
                 }
@@ -136,7 +136,7 @@ use App\Models\User\Reward;
         ?>
         
         @if(count($child->childs))
-            @include('distributor.treeview.child',['childs' => $child->childs])
+            @include('distributor.treeview.child',['user_childs' => $child->user_childs])
         @endif
     </li>
     @endif

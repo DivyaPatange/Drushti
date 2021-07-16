@@ -118,7 +118,7 @@ use App\Models\User\Reward;
                         $reward->admin_charges = 0.1 * ($reward->reward_amt);
                         $reward->net_income = $reward->reward_amt - $reward->admin_charges;
                         $reward->status = "Not Qualified";
-                        $reward->date = max($date);
+                        $reward->date = $date;
                         $reward->save();
                     }
                 }

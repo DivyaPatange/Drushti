@@ -62,12 +62,25 @@
                                 <br>
                             </span>
                             <ul id="Decor">
-                            @foreach($users as $user)
+                            <?php
+                                // dd($users);
+                            ?>
+                                @foreach($users as $user)
+                                <?php 
+                                    $productPayment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
+                                    if(empty($productPayment))
+                                    {
+                                        $color = "red";
+                                    }
+                                    else{
+                                        $color = "green";
+                                    }
+                                ?>
                                 <li>
                                 
                                     <span class="tf-nc" style="font-size:15px;">
                                         <a href="#">
-                                            <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
+                                            <i class="fas fa-atom" style="font-size:30px; color:{{ $color }};"></i></a>
                                         <br>
                                         {{ $user->fullname }}
                                         <br>
@@ -77,7 +90,7 @@
                                         @include('admin.company-tree.manageChild',['childs' => $user->childs])                                                
                                     @endif
                                 </li>
-                            @endforeach
+                                @endforeach
                             </ul>
                         </li>
                     </ul>

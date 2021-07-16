@@ -61,12 +61,22 @@
                             @if(count($users) == 1)
                             <ul id="Decor">
                                 @foreach($users->sortBy('side') as $key => $user)
+                                <?php 
+                                    $productPayment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
+                                    if(empty($productPayment))
+                                    {
+                                        $color = "red";
+                                    }
+                                    else{
+                                        $color = "green";
+                                    }
+                                ?>
                                     @if($key == 0)
                                         @if($user->side  == "L")
                                         <li>
                                             <span class="tf-nc" style="font-size:15px;">
                                             <a href="#">
-                                                <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
+                                                <i class="fas fa-atom" style="font-size:30px; color:{{ $color }};"></i></a>
                                             <br>
                                             {{ $user->fullname }}
                                             <br>
@@ -95,7 +105,7 @@
                                                                     
                                             <span class="tf-nc" style="font-size:15px;">
                                                 <a href="#">
-                                                    <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
+                                                    <i class="fas fa-atom" style="font-size:30px; color:{{ $color }};"></i></a>
                                                 <br>
                                                 {{ $user->fullname }}
                                                 <br>
