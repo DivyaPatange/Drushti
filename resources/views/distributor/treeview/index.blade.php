@@ -122,7 +122,16 @@
                             @else
                             <ul id="Decor">
                                 @foreach($users->sortBy('side') as $key => $user)
-                                
+                                <?php 
+                                    $productPayment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
+                                    if(empty($productPayment))
+                                    {
+                                        $color = "red";
+                                    }
+                                    else{
+                                        $color = "green";
+                                    }
+                                ?>
                                 <li>
                                                                 
                                     <span class="tf-nc" style="font-size:15px;">

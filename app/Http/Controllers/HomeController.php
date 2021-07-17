@@ -90,7 +90,7 @@ class HomeController extends Controller
             }
         }
         $userProductPayment = ProductPayment::where('user_id', Auth::user()->id)->where('product_amount', 2500)->first();
-        $reward = Reward::where('user_id', Auth::user()->id)->get();
-        return view('distributor.dashboard', compact('users', 'allMenus', 'items', 'items1', 'items2', 'items3', 'items4', 'items5', 'userProductPayment','reward'));
+        $rewards = Reward::where('user_id', Auth::user()->id)->get();
+        return view('distributor.dashboard', compact('users', 'allMenus', 'items', 'items1', 'items2', 'items3', 'items4', 'items5', 'userProductPayment','rewards'));
     }
 }

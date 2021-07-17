@@ -13,7 +13,6 @@ use App\Models\User\Reward;
 <!-- Widgets -->
 <ul style="display:none"> 
     @foreach($users as $key => $user)
-    @if(!empty($user->id))
     <li>
         <?php
             $payment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
@@ -60,7 +59,7 @@ use App\Models\User\Reward;
                     $reward->total_joiner = 10;
                     $reward->joiner_added = count($items);
                     $reward->reward = 10*10000;
-                    $reward->reward_amt = (0.05 * 10 * 10000);
+                    $reward->reward_amt = (0.06 * 10 * 10000);
                     $reward->admin_charges = 0.1 * ($reward->reward_amt);
                     $reward->net_income = $reward->reward_amt - $reward->admin_charges;
                     $reward->status = "Not Qualified";
@@ -80,10 +79,9 @@ use App\Models\User\Reward;
             }
         ?>
         @if(count($user->childs))
-            @include('distributor.treeview.child',['childs' => $user->childs])
+            @include('distributor.treeview.child',['user_childs' => $user->user_childs])
         @endif
     </li>
-    @endif
     @endforeach
 </ul>
 <div class="row clearfix">
@@ -121,8 +119,8 @@ use App\Models\User\Reward;
             </div>
             <div class="content">
                 <div class="text">Reward</div>
-                @if(count($reward) > 0)
-                <div class="number count-to" data-from="0" data-to="{{ $reward->sum('net_income') }}" data-speed="1000" data-fresh-interval="20"></div>
+                @if(count($rewards) > 0)
+                <div class="number count-to" data-from="0" data-to="{{ $rewards->sum('net_income') }}" data-speed="1000" data-fresh-interval="20"></div>
                 @else
                 <div class="number count-to" data-from="0" data-to="0" data-speed="1000" data-fresh-interval="20"></div>
                 @endif
