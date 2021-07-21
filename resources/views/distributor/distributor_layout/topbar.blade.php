@@ -121,8 +121,12 @@
                 <!-- #END# Notifications -->
                 <!-- Tasks -->
                 <li class="dropdown">
+                    <?php
+                        $userKyc = DB::table('user_kyc_details')->where('user_id', Auth::user()->id)->first();
+                    ?>
                     <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
                         {{ Auth::user()->fullname }} ({{ Auth::user()->username }})
+                        <img src="{{ asset('kycdocument/userImg/'.$userKyc->user_img) }}" style="width:33px; height:33px; border-radius:50%">
                     </a>
                     <ul class="dropdown-menu">
                         <li class="header">Welcome {{ Auth::user()->fullname }}!</li>
