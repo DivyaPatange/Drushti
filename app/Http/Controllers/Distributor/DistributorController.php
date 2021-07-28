@@ -815,7 +815,8 @@ class DistributorController extends Controller
     
      public function identity()
     {
-       return view('distributor.identityCard');
+        $kycdetails = UserKycDetail::where('user_id', Auth::user()->id)->first();
+        return view('distributor.identityCard', compact('kycdetails'));
     }
 
     public function myBusiness()

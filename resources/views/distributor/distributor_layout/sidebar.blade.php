@@ -1,8 +1,11 @@
 <aside id="leftsidebar" class="sidebar">
     <!-- User Info -->
     <div class="user-info">
+        <?php
+            $userKyc = DB::table('user_kyc_details')->where('user_id', Auth::user()->id)->first();
+        ?>
         <div class="image">
-            <img src="{{ asset('adminAsset/images/user.png') }}" width="48" height="48" alt="User" />
+            <img src="{{ asset('kycdocument/userImg/'.$userKyc->user_img) }}" width="48" height="48" alt="User" />
         </div>
         <div class="info-container">
             <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->fullname }}</div>

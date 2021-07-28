@@ -17,13 +17,13 @@
     <div class="col-md-12">
         @if ($message = Session::get('success'))
         <div class="alert alert-success alert-block">
-            <button type="button" class="close" data-dismiss="alert">×</button>	
+            <button type="button" class="close" data-dismiss="alert">×</button> 
                 <strong>{{ $message }}</strong>
         </div>
         @endif
         @if ($message = Session::get('danger'))
         <div class="alert alert-danger alert-block">
-            <button type="button" class="close" data-dismiss="alert">×</button>	
+            <button type="button" class="close" data-dismiss="alert">×</button> 
                 <strong>{{ $message }}</strong>
         </div>
         @endif
@@ -35,6 +35,7 @@
         <div class="col-xl-12 col-lg-12">
             <div class="card card-stats mb-4 mb-xl-0">
                 <div class="card-body">
+                    
                     <div class="row mt-5" id="div1">
                         <div class="col-md-3"></div>
                         <div class="col-md-6 mx-auto identityborder mt-5" style="margin-top: 20px;">
@@ -45,7 +46,8 @@
                                     <div class="mb-2"><h4>info@marketcareerpower.com</h4></div>
                                 </div>
                                 <div class="col-12 text-center">
-                                    <img src="" alt="Distributor photo" style="height:170px; width:150px" class="border">
+                                    
+                                <img src="{{ asset('kycdocument/userImg/'.$kycdetails->user_img) }}" alt="Distributor photo" style="height:170px; width:150px" class="border">
                                 </div>
                                 <div class="col-12 text-center mt-2 mb-2">
                                     <h4><b>Name:- &nbsp;{{Auth::user()->fullname}}</b></h4>
@@ -55,11 +57,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3"></div>
+                         <div class="col-md-3"></div>
                     </div>
                     <br> 
                     <br>
-                                
                     <div class="row">
                         <div class="col-md-12 text-center" style="margin-bottom: 20px;">
                             <button onclick="printContent('div1')" class="btn btn-dark" usesubmitbehavior="False" href="javascript:__doPostBack('btnPrint','')">Print</button>
