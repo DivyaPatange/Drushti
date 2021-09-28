@@ -115,13 +115,12 @@ class DistributorController extends Controller
         $bankdetails->acc_holder_name = $request->acc_holder_name;
         $bankdetails->save();
 
-        
         if($user->save()){
             $message = "Hello+".urlencode($request->fullname)."%0aWelcome+to+Market+Career+Power+Pvt.+Ltd."."%0aYour+Distributor+account+credentials+are+as+follows:%0aUsername:-+".$username."%0aPassword:-+".$request->password."%0aYou+can+login+to+your+distributor+account+here%0amarketcareerpower.com/login/";             
             $number = $request->mobile_no;
 
             $this->sendSms($message,$number);    
-            // dd($this->sendSms($message,$number));
+            // dd($this->sendSms($message, $number));
     
             return redirect('admin/distributor')->with([
                 'user' => $user,
@@ -255,9 +254,8 @@ class DistributorController extends Controller
 
     public function companyTree()
     {
-        $users = User::where('sponsor_id', '=', 0)->get();
-        // dd($users);
-        $allMenus = User::pluck('fullname', 'referral_code','id', 'side')->all();
+        $users = User::where('parent_id', '=', 0)->get();
+        $allMenus = User::pluck('fullname', 'referral_code','id', 'index')->all();
         return view('admin.company-tree.index', compact('users', 'allMenus'));
     }
 
@@ -787,7 +785,7 @@ class DistributorController extends Controller
             return response()->json(['success' => 'Due Reverted Successfully!']);
         }
     }
-
+    
     public function joiningDetails(Request $request)
     {
         if(request()->ajax()) {

@@ -200,7 +200,7 @@ $(document).ready(function(){
             data:{'side':query, referral_code:referral_code},
             // if search is succcessfully done, this callback function is called
             success:function (data) {
-                alert(data);
+                // alert(data);
                 // print the search results in the div called country_list(id)
                 $('#sponsor_id').val(data.sponsor_id);
                 $('#sponsor_name').val(data.sponsor_name);

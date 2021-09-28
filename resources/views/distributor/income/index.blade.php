@@ -21,7 +21,6 @@ use App\Models\User\Reward;
 <!-- Widgets -->
 <ul style="display:none"> 
     @foreach($users as $key => $user)
-    
     <li>
         <?php
             $payment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
@@ -68,7 +67,7 @@ use App\Models\User\Reward;
                     $reward->total_joiner = 10;
                     $reward->joiner_added = count($items);
                     $reward->reward = 10*10000;
-                    $reward->reward_amt = (0.05 * 10 * 10000);
+                    $reward->reward_amt = (0.06 * 10 * 10000);
                     $reward->admin_charges = 0.1 * ($reward->reward_amt);
                     $reward->net_income = $reward->reward_amt - $reward->admin_charges;
                     $reward->status = "Not Qualified";

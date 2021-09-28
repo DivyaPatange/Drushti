@@ -2,7 +2,11 @@
 @section("title","welcome letter")
 @section("page_title","welcome letter")
 @section("customcss")
-
+    <style>
+        .table .table {
+        background-color: black; 
+        }
+    </style>
 @endsection
 @section('content')
 <div class="row clearfix">
@@ -36,8 +40,7 @@
                             <tr>
                                 <td>
                                     <center>
-                                        <table  id="div1" align="center" cellspacing="0" cellpadding="5" style="font-family: Verdana;
-                                            width: 670px;">
+                                        <table class="table table-responsive"  id="div1">
                                             <tbody><tr>
                                                 <td style="border-bottom: black 1px solid; text-align: right">
                                                     <span id="lbldate" class="label" style="font-family:Verdana;font-size:11px;">{{ "Date: " . date("d/m/Y") }}</span></td>
@@ -45,7 +48,7 @@
                                             <tr>
                                                 <td style="text-align: left">
                                                     <br>
-                                                    <table border="0" cellspacing="2" cellpadding="2">
+                                                    <table class="table table-responsive">
                                                         <tbody><tr>
                                                             <td>
                                                                 <div id="lblWelcomeLetter" class="tdEmpty width-250"><div>Dear&nbsp;&nbsp;{{Auth::user()->fullname}}</div>

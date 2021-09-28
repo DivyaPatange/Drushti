@@ -98,8 +98,10 @@
                                                                     
                                             <span class="tf-nc" style="font-size:15px;">
                                                 <a href="#">
-                                                    <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
+                                                    <i class="fas fa-atom" style="font-size:30px; color:red;"></i>
+                                                </a>
                                                 <br>
+                                            </span>
                                         </li>
                                         <li>
                                                                     
@@ -110,7 +112,7 @@
                                                 {{ $user->fullname }}
                                                 <br>
                                                 {{ $user->referral_code }}
-                                                </span>
+                                            </span>
                                             @if(count($user->childs))
                                                 @include('distributor.treeview.manageChild',['childs' => $user->childs])                                                
                                             @endif
@@ -122,6 +124,7 @@
                             @else
                             <ul id="Decor">
                                 @foreach($users->sortBy('side') as $key => $user)
+                                
                                 <?php 
                                     $productPayment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
                                     if(empty($productPayment))
@@ -136,7 +139,7 @@
                                                                 
                                     <span class="tf-nc" style="font-size:15px;">
                                         <a href="#">
-                                            <i class="fas fa-atom" style="font-size:30px; color:red;"></i></a>
+                                            <i class="fas fa-atom" style="font-size:30px; color:{{ $color }};"></i></a>
                                         <br>
                                         {{ $user->fullname }}
                                         <br>

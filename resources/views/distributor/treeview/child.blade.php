@@ -105,6 +105,7 @@ use App\Models\User\Reward;
                     $userSalary->save();
                 }
                 $reward = DB::table('rewards')->where('user_id', Auth::user()->id)->where('level', $loop->depth)->first();
+                // dd($items1);
                 if(empty($reward))
                 {
                     if($joiners > 2){
@@ -123,6 +124,7 @@ use App\Models\User\Reward;
                     }
                 }
                 else{
+                    
                     if($count == $joiners)
                     {
                         $status = "Qualified";

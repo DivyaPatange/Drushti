@@ -6,10 +6,7 @@
     .identityborder{
     border: 1px solid black;
     }
-    img{
-    border-radius: 15px 0px 15px 0px;
-    border: 1px solid black;
-    }
+   
 </style>
 @endsection
 @section("content")
@@ -17,13 +14,13 @@
     <div class="col-md-12">
         @if ($message = Session::get('success'))
         <div class="alert alert-success alert-block">
-            <button type="button" class="close" data-dismiss="alert">×</button> 
+            <button type="button" class="close" data-dismiss="alert">×</button>	
                 <strong>{{ $message }}</strong>
         </div>
         @endif
         @if ($message = Session::get('danger'))
         <div class="alert alert-danger alert-block">
-            <button type="button" class="close" data-dismiss="alert">×</button> 
+            <button type="button" class="close" data-dismiss="alert">×</button>	
                 <strong>{{ $message }}</strong>
         </div>
         @endif
@@ -38,22 +35,21 @@
                     
                     <div class="row mt-5" id="div1">
                         <div class="col-md-3"></div>
-                        <div class="col-md-6 mx-auto identityborder mt-5" style="margin-top: 20px;">
+                        <div class="col-md-6 mx-auto identityborder mt-5">
                             <div class="row">
                                 <div class="col-12 text-center">
-                                    <img src="" class="m-2" width="100%">
-                                    <div><h4>Plot No: - 47 old kanpthi road,balaji nagar, near yashvant school,Dr.Ambedkar marg, Nagpur, Maharashtra - 440017.</h4></div>
+                                     <img src="{{ asset ('asset/images/mcp123.png')}}" alt=" " class="" style="height: 115px;">
                                     <div class="mb-2"><h4>info@marketcareerpower.com</h4></div>
                                 </div>
                                 <div class="col-12 text-center">
                                     
-                                <img src="{{ asset('kycdocument/userImg/'.$kycdetails->user_img) }}" alt="Distributor photo" style="height:170px; width:150px" class="border">
+                                <img src="{{ asset('kycdocument/userImg/'.$kycdetails->user_img) }}" alt="Distributor photo" style="height:170px; width:150px;border-radius: 15px 0px 15px 0px;border: 1px solid black;" class="border">
                                 </div>
                                 <div class="col-12 text-center mt-2 mb-2">
                                     <h4><b>Name:- &nbsp;{{Auth::user()->fullname}}</b></h4>
                                     <h4><b>Distributor ID:- &nbsp;{{Auth::user()->referral_code}}</b></h4>
-                                    <h4><b>Contact No.:- &nbsp;</b></h4>
-                                    <h4><b>Address.:- &nbsp; </b></h4>
+                                    <h4><b>Contact No.:- &nbsp;{{Auth::user()->mobile}}</b></h4>
+                                    <h4><b>Company Address.:- Plot No: - 47 old kamthi road,balaji nagar, near yashvant school,Dr.Ambedkar marg, Nagpur, Maharashtra - 440017. </b></h4>
                                 </div>
                             </div>
                         </div>

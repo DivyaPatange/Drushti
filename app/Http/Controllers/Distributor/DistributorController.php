@@ -231,7 +231,7 @@ class DistributorController extends Controller
                     $number = $request->mobile_no;
         
                     $this->sendSms($message,$number); 
-                    dd($this->sendSms($message,$number)); 
+                    // dd($this->sendSms($message,$number)); 
                     return redirect('/distributor/joiners')->with([
                         'user' => $user,
                         'kycdetails' => $kycdetails,
@@ -257,6 +257,24 @@ class DistributorController extends Controller
         }
     }
 
+    public function sendSms($message,$number)
+    {
+        $url = 'http://sms.bulksmsind.in/v2/sendSMS?username=iceico&message='.$message.'&sendername=MRKTCP&smstype=TRANS&numbers='.$number.'&apikey=24ae8ae0-b514-499b-8baf-51d55808a2c4&peid=1201161909189905209&templateid=1207161959177676662';
+        $ch = curl_init();  
+        curl_setopt($ch,CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        curl_setopt($ch,CURLOPT_HEADER, false);
+    
+        $output=curl_exec($ch);
+    
+        curl_close($ch);
+    
+        return $output;
+    }
+    
     public function searchSponsor(Request $request)
     {
         if($request->ajax()) {
@@ -356,24 +374,6 @@ class DistributorController extends Controller
             }
                 
         }
-    }
-
-    public function sendSms($message,$number)
-    {
-        $url = 'http://sms.bulksmsind.in/v2/sendSMS?username=iceico&message='.$message.'&sendername=MRKTCP&smstype=TRANS&numbers='.$number.'&apikey=24ae8ae0-b514-499b-8baf-51d55808a2c4&peid=1201161909189905209&templateid=1207161959177676662';
-        $ch = curl_init();  
-        curl_setopt($ch,CURLOPT_URL,$url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
-        curl_setopt($ch,CURLOPT_HEADER, false);
-    
-        $output=curl_exec($ch);
-    
-        curl_close($ch);
-    
-        return $output;
     }
 
     /**
@@ -504,6 +504,17 @@ class DistributorController extends Controller
         
         return view('distributor.treeview.index',compact('users','allMenus'));
     }
+    public function welcomeLetter()
+    {
+       return view('distributor.welcomeLetter');
+    }
+    
+     public function identity()
+    {
+        $kycdetails = UserKycDetail::where('user_id', Auth::user()->id)->first();
+        return view('distributor.identityCard', compact('kycdetails'));
+    }
+    
 
     public function kycDocument()
     {
@@ -657,35 +668,35 @@ class DistributorController extends Controller
                 if(!empty($levelPayment)){
                     $items[] = $levelPayment->payment_date;
                 }
-                foreach($user->childs as $child)
+                foreach($user->user_childs as $child)
                 {
                     if(!empty($child->id)){
                         $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
                         if(!empty($levelPayment1)){
                             $items1[] = $levelPayment1->payment_date;
                         }
-                        foreach($child->childs as $child)
+                        foreach($child->user_childs as $child)
                         {
                             if(!empty($child->id)){
                                 $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
                                 if(!empty($levelPayment2)){
                                     $items2[] = $levelPayment2->payment_date;
                                 }
-                                foreach($child->childs as $child)
+                                foreach($child->user_childs as $child)
                                 {
                                     if(!empty($child->id)){
                                         $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
                                         if(!empty($levelPayment3)){
                                             $items3[] = $levelPayment3->payment_date;
                                         }
-                                        foreach($child->childs as $child)
+                                        foreach($child->user_childs as $child)
                                         {
                                             if(!empty($child->id)){
                                                 $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
                                                 if(!empty($levelPayment4)){
                                                     $items4[] = $levelPayment4->payment_date;
                                                 }
-                                                foreach($child->childs as $child)
+                                                foreach($child->user_childs as $child)
                                                 {
                                                     if(!empty($child->id)){
                                                         $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
@@ -807,18 +818,7 @@ class DistributorController extends Controller
             ->make(true);
         }
     }
-
-    public function welcomeLetter()
-    {
-       return view('distributor.welcomeLetter');
-    }
     
-     public function identity()
-    {
-        $kycdetails = UserKycDetail::where('user_id', Auth::user()->id)->first();
-        return view('distributor.identityCard', compact('kycdetails'));
-    }
-
     public function myBusiness()
     {
         $users = User::where('parent_id', Auth::user()->id)->get();

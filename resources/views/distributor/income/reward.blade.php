@@ -32,7 +32,7 @@
                                         <th>Level</th>
                                         <th>Joiner Required</th>
                                         <th>Joiner Added</th>
-                                        <th>Reward</th>
+                                        <th>Business</th>
                                         <th>Reward Amount</th>
                                         <th>Admin Charges</th>
                                         <th>My Net Income</th>
@@ -44,7 +44,7 @@
                                         <th>Level</th>
                                         <th>Joiner Required</th>
                                         <th>Joiner Added</th>
-                                        <th>Reward</th>
+                                        <th>Business</th>
                                         <th>Reward Amount</th>
                                         <th>Admin Charges</th>
                                         <th>My Net Income</th>

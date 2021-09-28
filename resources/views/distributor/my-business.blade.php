@@ -59,7 +59,7 @@ use App\Models\User\Reward;
                     $reward->total_joiner = 10;
                     $reward->joiner_added = count($items);
                     $reward->reward = 10*10000;
-                    $reward->reward_amt = (0.05 * 10 * 10000);
+                    $reward->reward_amt = (0.06 * 10 * 10000);
                     $reward->admin_charges = 0.1 * ($reward->reward_amt);
                     $reward->net_income = $reward->reward_amt - $reward->admin_charges;
                     $reward->status = "Not Qualified";
