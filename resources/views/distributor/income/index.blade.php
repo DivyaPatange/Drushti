@@ -23,9 +23,9 @@ use App\Models\User\Reward;
     @foreach($users as $key => $user)
     <li>
         <?php
-            $payment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
+            $payment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '10500')->first();
             if($payment){
-                $userIncome = DB::table('user_incomes')->where('child_id', $user->id)->where('user_id', Auth::user()->id)->first();
+                $userIncome = DB::table('user_incomes')->where('child_id', $user->id)->where('user_id', Auth::user()->id)->where('plan', '10500')->first();
                 // dd($fastTrack);
                 $userSalary = DB::table('user_salaries')->where('child_id', $user->id)->where('user_id', Auth::user()->id)->first();
                 // dd(empty($fastTrack));
@@ -40,6 +40,7 @@ use App\Models\User\Reward;
                     $userIncome->income_amount = 0.06 * ($payment->product_amount +  7000);
                     $userIncome->admin_charges = 0.1 * (0.06 * ($payment->product_amount +  7000));
                     $userIncome->net_income = (0.06 * ($payment->product_amount +  7000)) - (0.1 * (0.06 * ($payment->product_amount +  7000)));
+                    $userIncome->plan = 10500;
                     $userIncome->save();
                     // dd($fastTrack);
                 }
@@ -58,7 +59,7 @@ use App\Models\User\Reward;
                     $userSalary->save();
                 }
                 $count = 10;
-                $reward = DB::table('rewards')->where('user_id', Auth::user()->id)->where('level', 1)->first();
+                $reward = DB::table('rewards')->where('user_id', Auth::user()->id)->where('level', 1)->where('plan', '10500')->first();
                 if(empty($reward))
                 {
                     $reward = new Reward();
@@ -72,6 +73,7 @@ use App\Models\User\Reward;
                     $reward->net_income = $reward->reward_amt - $reward->admin_charges;
                     $reward->status = "Not Qualified";
                     $reward->date = max($items);
+                    $reward->plan = 10500;
                     $reward->save();
                 }
                 else{
@@ -82,7 +84,7 @@ use App\Models\User\Reward;
                     else{
                         $status = "Not Qualified";
                     }
-                    $result = DB::table('rewards')->where('user_id', Auth::user()->id)->where('level', 1)->update(['joiner_added' => count($items), 'status' => $status, 'date' => max($items)]);
+                    $result = DB::table('rewards')->where('user_id', Auth::user()->id)->where('level', 1)->where('plan', '10500')->update(['joiner_added' => count($items), 'status' => $status, 'date' => max($items)]);
                 }
             }
         ?>
@@ -135,7 +137,64 @@ use App\Models\User\Reward;
 </div>
 @yield('income_content')
 <!-- #END# Widgets -->
+<ul style="display:none"> 
+    @foreach($users1 as $key => $user)
+    <li>
+        <?php
+            $payment1 = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+            if($payment1){
+                $userIncome1 = DB::table('user_incomes')->where('child_id', $user->id)->where('user_id', Auth::user()->id)->where('plan', '3000')->first();
+                if(empty($userIncome1))
+                {
+                    $userIncome1 = new UserIncome();
+                    $userIncome1->user_id = Auth::user()->id;
+                    $userIncome1->child_id = $user->id;
+                    $userIncome1->level = 1;;
+                    $userIncome1->product_amount = $payment1->product_amount;
+                    $userIncome1->payment_date = $payment1->payment_date;
+                    $userIncome1->income_amount = 0.15 * $payment1->product_amount;
+                    $userIncome1->admin_charges = 0.1 * 0.15 * $payment1->product_amount;
+                    $userIncome1->net_income = (0.15 * $payment1->product_amount) - (0.1 * 0.15 * $payment1->product_amount);
+                    $userIncome1->plan = 3000;
+                    $userIncome1->save();
+                }
 
+                $count = 10;
+                $reward1 = DB::table('rewards')->where('user_id', Auth::user()->id)->where('level', 1)->where('plan', '3000')->first();
+                if(empty($reward1))
+                {
+                    $reward1 = new Reward();
+                    $reward1->user_id = Auth::user()->id;
+                    $reward1->level = 1;
+                    $reward1->total_joiner = 10;
+                    $reward1->joiner_added = count($items6);
+                    $reward1->reward = 10*10000;
+                    $reward1->reward_amt = (0.1 * 10 * 10000);
+                    $reward1->admin_charges = 0.1 * ($reward->reward_amt);
+                    $reward1->net_income = $reward->reward_amt - $reward->admin_charges;
+                    $reward1->status = "Not Qualified";
+                    $reward1->date = max($items6);
+                    $reward1->plan = 3000;
+                    $reward1->save();
+                }
+                else{
+                    if($count == count($items6))
+                    {
+                        $status = "Qualified";
+                    }
+                    else{
+                        $status = "Not Qualified";
+                    }
+                    $result = DB::table('rewards')->where('user_id', Auth::user()->id)->where('level', 1)->where('plan', '3000')->update(['joiner_added' => count($items6), 'status' => $status, 'date' => max($items6)]);
+                }
+            }
+        ?>
+        @if(count($user->childs))
+            @include('distributor.treeview.plan-child',['user_childs' => $user->user_childs])
+        @endif
+    </li>
+    @endforeach
+</ul>
 @endsection
 @section('customjs')
 <!-- Jquery DataTable Plugin Js -->

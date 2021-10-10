@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\FranchiseController;
 use App\Http\Controllers\Distributor\ChangePasswordController;
 use App\Http\Controllers\Auth\FranchiseLoginController;
 use App\Http\Controllers\Auth\FranchiseRegisterController;
+use App\Http\Controllers\Franchise\PlanPaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +100,8 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::post('/generate-income-settlement', [DistributorController::class, 'generateIncomeSettlement'])->name('generate-income-settlement');
     Route::get('/salary-settlement', [DistributorController::class, 'salarySettlement'])->name('salary-settlement');
     Route::post('/generate-salary-settlement', [DistributorController::class, 'generateSalarySettlement'])->name('generate-salary-settlement');
+    Route::get('/reward-settlement', [DistributorController::class, 'rewardSettlement'])->name('reward-settlement');
+    Route::post('/generate-reward-settlement', [DistributorController::class, 'generateRewardSettlement'])->name('generate-reward-settlement');
     Route::get('/wallet', [DistributorController::class, 'adminWallet'])->name('wallet');
     Route::get('/joining-details', [DistributorController::class, 'joiningDetails'])->name('joining-detail.index');
     Route::get('/income-settlement/{id}', [DistributorController::class, 'viewIncomeSettlement'])->name('income-settlement.view');
@@ -106,6 +109,8 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::get('/paid-income-settlement/{id}', [DistributorController::class, 'viewPaidIncomeSettlement'])->name('income-settlement.paid');
     Route::get('/paid-salary-settlement/{id}', [DistributorController::class, 'viewPaidSalarySettlement'])->name('salary-settlement.paid');
     Route::post('/settlement/status', [DistributorController::class, 'settlementStatus'])->name('settlement.status');
+    Route::get('/reward-settlement/{id}', [DistributorController::class, 'viewRewardSettlement'])->name('reward-settlement.view');
+    Route::get('/paid-reward-settlement/{id}', [DistributorController::class, 'viewPaidRewardSettlement'])->name('reward-settlement.paid');
 
 });
 
@@ -153,5 +158,5 @@ Route::prefix('franchise')->name('franchise.')->group(function() {
     Route::get('/payment-search', [App\Http\Controllers\Franchise\FranchiseController::class, 'searchDistributorDetails'])->name('payment-search');
     Route::post('/send-otp', [App\Http\Controllers\Franchise\FranchiseController::class, 'sendOtp'])->name('product-payment.send-otp');
     Route::post('/product-payment/submit', [App\Http\Controllers\Franchise\FranchiseController::class, 'submitProductPayment'])->name('product-payment.submit');
-
+    Route::resource('plan-payment', PlanPaymentController::class);
 });

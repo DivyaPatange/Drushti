@@ -1,7 +1,5 @@
 <?php 
-use App\Models\User\UserIncome;
 use App\Models\User\UserSalary;
-use App\Models\User\Reward;
 use App\Http\Controllers\Admin\DistributorController;
 ?>
 @extends('admin.admin_layout.main')
@@ -50,26 +48,9 @@ $items5 = $val['items5'];
     @if(!empty($user->id))
     <li>
         <?php
-            $payment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
+            $payment = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '10500')->first();
             if($payment){
-                $userIncome = DB::table('user_incomes')->where('child_id', $user->id)->where('user_id', $joiner->id)->first();
-                // dd($fastTrack);
                 $userSalary = DB::table('user_salaries')->where('child_id', $user->id)->where('user_id', $joiner->id)->first();
-                // dd(empty($fastTrack));
-                if(empty($userIncome))
-                {
-                    $userIncome = new UserIncome();
-                    $userIncome->user_id = $joiner->id;
-                    $userIncome->child_id = $user->id;
-                    $userIncome->level = 1;;
-                    $userIncome->product_amount = $payment->product_amount +  7000;
-                    $userIncome->payment_date = $payment->payment_date;
-                    $userIncome->income_amount = 0.06 * ($payment->product_amount +  7000);
-                    $userIncome->admin_charges = 0.1 * (0.06 * ($payment->product_amount +  7000));
-                    $userIncome->net_income = (0.06 * ($payment->product_amount +  7000)) - (0.1 * (0.06 * ($payment->product_amount +  7000)));
-                    $userIncome->save();
-                    // dd($fastTrack);
-                }
 
                 if(empty($userSalary))
                 {
@@ -84,45 +65,17 @@ $items5 = $val['items5'];
                     $userSalary->net_income = (0.01 * ($payment->product_amount +  7000)) - (0.1 * (0.01 * ($payment->product_amount +  7000)));
                     $userSalary->save();
                 }
-                $count = 10;
-                $reward = DB::table('rewards')->where('user_id', $joiner->id)->where('level', 1)->first();
-                if(empty($reward))
-                {
-                    if(count($items) > 2){
-                        $reward = new Reward();
-                        $reward->user_id = $joiner->id;
-                        $reward->level = 1;
-                        $reward->total_joiner = 10;
-                        $reward->joiner_added = count($items);
-                        $reward->reward = 10*10000;
-                        $reward->reward_amt = (0.06 * 10 * 10000);
-                        $reward->admin_charges = 0.1 * ($reward->reward_amt);
-                        $reward->net_income = $reward->reward_amt - $reward->admin_charges;
-                        $reward->status = "Not Qualified";
-                        $reward->date = max($items);
-                        $reward->save();
-                    }
-                }
-                else{
-                    if($count == count($items))
-                    {
-                        $status = "Qualified";
-                    }
-                    else{
-                        $status = "Not Qualified";
-                    }
-                    $result = DB::table('rewards')->where('user_id', $joiner->id)->where('level', 1)->update(['joiner_added' => count($items), 'status' => $status, 'date' => max($items)]);
-                }
             }
         ?>
         @if(count($user->childs))
-            @include('admin.company-tree.child',['user_childs' => $user->user_childs])
+            @include('admin.company-tree.salary',['user_childs' => $user->user_childs])
         @endif
     </li>
     @endif
     @endforeach
 </ul>
 @endforeach
+
 <!-- Widgets -->
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -299,9 +252,6 @@ $('body').on('click', '#submitButton', function () {
                 else{
                     toastr.error(returndata.error);
                 }
-            
-            // location.reload();
-            // $("#pay").val("");
             }
         });
     }

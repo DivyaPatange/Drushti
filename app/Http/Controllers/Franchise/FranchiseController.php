@@ -58,7 +58,7 @@ class FranchiseController extends Controller
 
     public function productPayment()
     {
-        $productPayment = ProductPayment::where('franchise_id', Auth::guard('franchise')->user()->id)->get();
+        $productPayment = ProductPayment::where('franchise_id', Auth::guard('franchise')->user()->id)->where('plan', '10500')->get();
         if(request()->ajax())
         {
             return datatables()->of($productPayment)
@@ -128,7 +128,7 @@ class FranchiseController extends Controller
     {
         $referral_code = $request->referral_code;
         $user = User::where('referral_code', $referral_code)->first();
-        $productPayment = ProductPayment::where('referral_code', $referral_code)->where('product_amount', '=', 3000)->first();
+        $productPayment = ProductPayment::where('referral_code', $referral_code)->where('product_amount', '=', 3000)->where('plan', '10500')->first();
         $order = DB::table('orders')->where('franchise_id', Auth::guard('franchise')->user()->id)->where('status', 1)->get()->sum('order_amt');
         // dd($product);
         $productPaymentAmount = DB::table('product_payments')->where('franchise_id', Auth::guard('franchise')->user()->id)->get()->sum('product_amount');
@@ -146,6 +146,7 @@ class FranchiseController extends Controller
                 $productPayment->referral_code = $referral_code;
                 $productPayment->product_amount = 3000;
                 $productPayment->payment_date =  date("Y-m-d", strtotime($request->payment_date));
+                $productPayment->plan = 10500;
                 $productPayment->save();
                 if($productPayment)
                 {

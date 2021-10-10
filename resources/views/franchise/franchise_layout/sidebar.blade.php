@@ -35,10 +35,18 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('franchise.product-payment') }}">
-                    <i class="material-icons">layers</i>
+                <a href="javascript:void(0);" class="menu-toggle">
+                    <i class="material-icons">widgets</i>
                     <span>Product Payment</span>
                 </a>
+                <ul class="ml-menu">
+                    <li>
+                        <a href="{{ route('franchise.product-payment') }}">10,500 /- Plan</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('franchise.plan-payment.index') }}">3,000 /- Plan</a>
+                    </li>
+                </ul>
             </li>
             <li>
                 <a href="{{ route('franchise.kyc-document') }}">

@@ -11,5 +11,5 @@ class ProductPayment extends Model
 
     protected $table = "product_payments";
 
-    protected $fillable = ['franchise_id', 'user_id', 'referral_code', 'product_amount', 'payment_date'];
+    protected $fillable = ['franchise_id', 'user_id', 'referral_code', 'product_amount', 'payment_date', 'plan'];
 }

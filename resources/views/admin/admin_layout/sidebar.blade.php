@@ -90,6 +90,9 @@
                     <li>
                         <a href="{{ route('admin.salary-settlement') }}">Salary Settlement</a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.reward-settlement') }}">Reward Settlement</a>
+                    </li>
                 </ul>
             </li>
             <!-- 

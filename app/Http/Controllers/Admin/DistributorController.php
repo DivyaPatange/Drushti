@@ -16,6 +16,7 @@ use DateTime;
 use App\Models\Admin\UserWallet;
 use App\Models\Admin\PaymentSettlement;
 use App\Models\Franchise\ProductPayment;
+use App\Models\Franchise\AdminPayment;
 
 class DistributorController extends Controller
 {
@@ -32,12 +33,19 @@ class DistributorController extends Controller
     public function index()
     {
         $users = DB::table('users')
-        ->where('users.id', '!=', null)
-        // ->join('user_kyc_details', 'user_kyc_details.user_id', '=', 'users.id')
-        // ->join('user_bank_details', 'user_bank_details.user_id', '=', 'users.id')
-        // ->join('user_infos', 'user_infos.user_id', '=', 'users.id')
         ->select('users.*')
         ->get();
+        // foreach($users as $user){
+        //     $admin = AdminPayment::where('user_id', $user->id)->first();
+        //     if(empty($admin)){
+        //     $adminPayment = new AdminPayment();
+        //         $adminPayment->user_id = $user->id;
+        //         $adminPayment->admingiven = 7500;
+        //         $adminPayment->usergiven = 0;
+        //         $adminPayment->remain = 7500;
+        //         $adminPayment->save();
+        //     }
+        // }
         if(request()->ajax())
         {
             return datatables()->of($users)
@@ -314,7 +322,7 @@ class DistributorController extends Controller
 
     public function incomeSettlement()
     {
-        $joiners1 = User::where('parent_id', 0)->get();
+        $joiners1 = User::all();
         $settlement = Settlement::where('reason', 'Income')->get();
         if(request()->ajax())
         {
@@ -325,11 +333,18 @@ class DistributorController extends Controller
             ->addColumn('end_date', function($row){
                 return date('d-m-Y', strtotime($row->end_date));
             })
+            ->addColumn('plan', function($row){
+                if ($row->plan = 10500) {
+                    return '10,500 /-';
+                } elseif ($row->plan = 3000) {
+                    return '3,000 /-';
+                }
+            })
             ->addColumn('action', function($row){
                 $route = route('admin.income-settlement.view', $row->id);
                 return '<a href="'.$route.'"><button type="button" class="btn bg-indigo waves-effect">View</button></a>';
             })
-            ->rawColumns(['start_date', 'end_date', 'action'])
+            ->rawColumns(['start_date', 'end_date', 'action', 'plan'])
             ->addIndexColumn()
             ->make(true);
         }
@@ -357,92 +372,169 @@ class DistributorController extends Controller
             $startDate = $year.'-'.$month1.'-01';
             $endDate = $year.'-'.$month1.'-15';
         }
-        // return $start_date;
-        $users = DB::table('users')->get();
-        $settlement = DB::table('settlements')->where('start_date', $start_date)->where('end_date', $end_date)->where('reason', 'Income')->first();    
-        // return empty($settlement);
-        if(empty($settlement)){
-            $settlement = new Settlement();
-            $settlement->month_year = $month." ".$year;
-            $settlement->start_date = $start_date;
-            $settlement->end_date = $end_date;
-            $settlement->prev_start_date = $startDate;
-            $settlement->prev_end_date = $endDate;
-            $settlement->reason = "Income";
-            $settlement->save();
-            foreach($users as $user)
-            {
-                $income = DB::table('user_incomes')->whereBetween('payment_date', [$startDate , $endDate])
-                ->where('user_id', $user->id)->get()->sum('net_income');
-                $adminwallet = DB::table('admin_payments')->where('user_id', $user->id)->first();
-                $paymentDetails = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
-                if(!empty($paymentDetails)){
-                    $user_dt = new DateTime($paymentDetails->payment_date);
-                    $user_converted_at = $user_dt->format('Y-m-d');
-                    $dt = strtotime($user_converted_at);
-                    $extendedDate = date("Y-m-d", strtotime("+15 month", $dt));
-                    $convertExtendedDate =strtotime($extendedDate);
-                    $month1=date("F",$convertExtendedDate);
-                    $year1 = date("Y", $convertExtendedDate);
-                }
-                if(date("YF", strtotime($month.'-'.$year)) <= date("YF", strtotime($month1.'-'.$year1)))
-                {
-                    $userwallet = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->first();
-                    if($income > 0)
+        if($start_date === $end_date) {
+            return response()->json(['error' => "Start Date & End date can't same."]);
+        } else {
+            if ($request->plan == '10500') {
+                // return $start_date;
+                $users = DB::table('users')->get();
+                $settlement = DB::table('settlements')->where('start_date', $start_date)->where('end_date', $end_date)->where('reason', 'Income')->first();    
+                // return empty($settlement);
+                if(empty($settlement)){
+                    $settlement = new Settlement();
+                    $settlement->month_year = $month." ".$year;
+                    $settlement->start_date = $start_date;
+                    $settlement->end_date = $end_date;
+                    $settlement->prev_start_date = $startDate;
+                    $settlement->prev_end_date = $endDate;
+                    $settlement->reason = "Income";
+                    $settlement->plan = 10500;
+                    $settlement->save();
+                    foreach($users as $user)
                     {
-                        if(empty($userwallet))
-                        {
-                            $userwallet = new UserWallet();
-                            $userwallet->settlement_id = $settlement->id;
-                            $userwallet->user_id = $user->id;
-                            $userwallet->salary = $income;
-                            $userwallet->balance = $adminwallet->remain;
-                            $userwallet->extra = 0;
-                            $userwallet->adminwallet = 0;
-                            $userwallet->date_from = $start_date;
-                            $userwallet->date_to =  $end_date;
-                            $userwallet->reason = "Income";
-                            $userwallet->save();
-                            if($userwallet)
+                        $income = DB::table('user_incomes')->whereBetween('payment_date', [$startDate , $endDate])
+                        ->where('user_id', $user->id)->where('plan', '10500')->get()->sum('net_income');
+                        $adminwallet = DB::table('admin_payments')->where('user_id', $user->id)->first();
+                        $paymentDetails = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '10500')->first();
+                        if(!empty($paymentDetails)){
+                            $user_dt = new DateTime($paymentDetails->payment_date);
+                            $user_converted_at = $user_dt->format('Y-m-d');
+                            $dt = strtotime($user_converted_at);
+                            $extendedDate = date("Y-m-d", strtotime("+15 month", $dt));
+                            $convertExtendedDate =strtotime($extendedDate);
+                            $month1=date("F",$convertExtendedDate);
+                            $year1 = date("Y", $convertExtendedDate);
+                        
+                            if(date("YF", strtotime($month.'-'.$year)) <= date("YF", strtotime($month1.'-'.$year1)))
                             {
-                                $empSalary = $userwallet->salary;
-                                $paidToAdmin = $userwallet->balance;
-                                $usergiven = $adminwallet->usergiven;
-                                if($paidToAdmin > 0)
+                                $userwallet = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->first();
+                                if($income > 0)
                                 {
-                                    if($empSalary < $paidToAdmin)
+                                    if(empty($userwallet))
                                     {
-                                        $totalDue = $userwallet->balance;
-                                        $remain = $paidToAdmin - $empSalary;
-                                        $giveToAdmin = $usergiven + $empSalary;
-                                        $totalAvailable = $totalDue - ($empSalary + $remain);
-                                        $row = DB::table('admin_payments')->where('user_id', $user->id)->update(['usergiven' => $giveToAdmin, 'remain' => $remain]);
-                                        $row1 = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->update(['extra' => $totalAvailable, 'balance' => $remain, 'adminwallet' => $empSalary]);
-        
-                                    }
-                                    else{
-                                        $extra = $empSalary - $paidToAdmin;
-                                        $balance = $empSalary - ($paidToAdmin + $extra);
-                                        $row2 = DB::table('admin_payments')->where('user_id', $user->id)->update(['usergiven' => 7500, 'remain' => $balance]);
-                                        $row3 = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->update(['extra' => $extra, 'balance' => $balance, 'adminwallet' => $paidToAdmin]);
+                                        $userwallet = new UserWallet();
+                                        $userwallet->settlement_id = $settlement->id;
+                                        $userwallet->user_id = $user->id;
+                                        $userwallet->salary = $income;
+                                        $userwallet->balance = $adminwallet->remain;
+                                        $userwallet->extra = 0;
+                                        $userwallet->adminwallet = 0;
+                                        $userwallet->date_from = $start_date;
+                                        $userwallet->date_to =  $end_date;
+                                        $userwallet->reason = "Income";
+                                        $userwallet->save();
+                                        if($userwallet)
+                                        {
+                                            $empSalary = $userwallet->salary;
+                                            $paidToAdmin = $userwallet->balance;
+                                            $usergiven = $adminwallet->usergiven;
+                                            if($paidToAdmin > 0)
+                                            {
+                                                if($empSalary < $paidToAdmin)
+                                                {
+                                                    $totalDue = $userwallet->balance;
+                                                    $remain = $paidToAdmin - $empSalary;
+                                                    $giveToAdmin = $usergiven + $empSalary;
+                                                    $totalAvailable = $totalDue - ($empSalary + $remain);
+                                                    $row = DB::table('admin_payments')->where('user_id', $user->id)->update(['usergiven' => $giveToAdmin, 'remain' => $remain]);
+                                                    $row1 = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->update(['extra' => $totalAvailable, 'balance' => $remain, 'adminwallet' => $empSalary]);
+                    
+                                                }
+                                                else{
+                                                    $extra = $empSalary - $paidToAdmin;
+                                                    $balance = $empSalary - ($paidToAdmin + $extra);
+                                                    $row2 = DB::table('admin_payments')->where('user_id', $user->id)->update(['usergiven' => 7500, 'remain' => $balance]);
+                                                    $row3 = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->update(['extra' => $extra, 'balance' => $balance, 'adminwallet' => $paidToAdmin]);
+                                                }
+                                            }
+                                            elseif($userwallet->balance == 0){
+                                                $row4 = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->update(['extra' => $empSalary, 'balance' => $userwallet->balance, 'adminwallet' => $userwallet->balance]);
+                                            }
+                                            $transaction = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->first();
+                                            // dd($transaction);
+                                            $adminWallet = DB::table('admin_payments')->where('user_id', $user->id)->where('usergiven', 7500)->first();
+                                            if(!empty($paymentDetails))
+                                            {
+                                                if(!empty($adminWallet))
+                                                {
+                                                    if($transaction->extra > 0)
+                                                    {
+                                                        $payment = new PaymentSettlement();
+                                                        $payment->settlement_id = $settlement->id;
+                                                        $payment->user_id = $transaction->user_id;
+                                                        $payment->total = $transaction->extra;
+                                                        $payment->from_date = $start_date;
+                                                        $payment->to_date = $end_date;
+                                                        $payment->save();
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
-                                elseif($userwallet->balance == 0){
-                                    $row4 = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->update(['extra' => $empSalary, 'balance' => $userwallet->balance, 'adminwallet' => $userwallet->balance]);
-                                }
-                                $transaction = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->first();
-                                // dd($transaction);
-                                $adminWallet = DB::table('admin_payments')->where('user_id', $user->id)->where('usergiven', 7500)->first();
-                                if(!empty($paymentDetails))
+                            }
+                        }
+                    }
+                    return response()->json(['success' => 'Settlement is Generated!']);
+                }
+                else{
+                    return response()->json(['error' => 'Settlement is already Generated!']);
+                }
+            } elseif ($request->plan == '3000') {
+                
+                // return $start_date;
+                $users = DB::table('users')->get();
+                $settlement = DB::table('settlements')->where('start_date', $start_date)->where('end_date', $end_date)->where('reason', 'Income')->where('plan', 3000)->first();    
+                // return empty($settlement);
+                if(empty($settlement)){
+                    $settlement = new Settlement();
+                    $settlement->month_year = $month." ".$year;
+                    $settlement->start_date = $start_date;
+                    $settlement->end_date = $end_date;
+                    $settlement->prev_start_date = $startDate;
+                    $settlement->prev_end_date = $endDate;
+                    $settlement->reason = "Income";
+                    $settlement->plan = 3000;
+                    $settlement->save();
+                    foreach($users as $user)
+                    {
+                        $income = DB::table('user_incomes')->whereBetween('payment_date', [$startDate , $endDate])
+                        ->where('user_id', $user->id)->where('plan', '3000')->get()->sum('net_income');
+                        $paymentDetails = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                        if(!empty($paymentDetails)){
+                            $user_dt = new DateTime($paymentDetails->payment_date);
+                            $user_converted_at = $user_dt->format('Y-m-d');
+                            $dt = strtotime($user_converted_at);
+                            $extendedDate = date("Y-m-d", strtotime("+15 month", $dt));
+                            $convertExtendedDate =strtotime($extendedDate);
+                            $month1=date("F",$convertExtendedDate);
+                            $year1 = date("Y", $convertExtendedDate);
+                        
+                            if(date("YF", strtotime($month.'-'.$year)) <= date("YF", strtotime($month1.'-'.$year1)))
+                            {
+                                $userwallet = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->first();
+                                if($income > 0)
                                 {
-                                    if(!empty($adminWallet))
+                                    if(empty($userwallet))
                                     {
-                                        if($transaction->extra > 0)
+                                        $userwallet = new UserWallet();
+                                        $userwallet->settlement_id = $settlement->id;
+                                        $userwallet->user_id = $user->id;
+                                        $userwallet->salary = $income;
+                                        $userwallet->balance = 0;
+                                        $userwallet->extra = $income;
+                                        $userwallet->adminwallet = 0;
+                                        $userwallet->date_from = $start_date;
+                                        $userwallet->date_to =  $end_date;
+                                        $userwallet->reason = "Income";
+                                        $userwallet->plan = 3000;
+                                        $userwallet->save();
+                                        if($userwallet)
                                         {
                                             $payment = new PaymentSettlement();
                                             $payment->settlement_id = $settlement->id;
-                                            $payment->user_id = $transaction->user_id;
-                                            $payment->total = $transaction->extra;
+                                            $payment->user_id = $user->user_id;
+                                            $payment->total = $userwallet->extra;
                                             $payment->from_date = $start_date;
                                             $payment->to_date = $end_date;
                                             $payment->save();
@@ -452,12 +544,12 @@ class DistributorController extends Controller
                             }
                         }
                     }
+                    return response()->json(['success' => 'Settlement is Generated!']);
+                }
+                else{
+                    return response()->json(['error' => 'Settlement is already Generated!']);
                 }
             }
-            return response()->json(['success' => 'Settlement is Generated!']);
-        }
-        else{
-            return response()->json(['error' => 'Settlement is already Generated!']);
         }
     }
 
@@ -474,42 +566,42 @@ class DistributorController extends Controller
         foreach($users as $user)
         {
             if(!empty($user->id)){
-                $levelPayment = ProductPayment::where('user_id', $user->id)->where('product_amount', 3000)->first();
+                $levelPayment = ProductPayment::where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                 if(!empty($levelPayment)){
                     $items[] = $levelPayment->payment_date;
                 }
                 foreach($user->user_childs as $child)
                 {
                     if(!empty($child->id)){
-                        $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                        $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                         if(!empty($levelPayment1)){
                             $items1[] = $levelPayment1->payment_date;
                         }
                         foreach($child->user_childs as $child)
                         {
                             if(!empty($child->id)){
-                                $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                 if(!empty($levelPayment2)){
                                     $items2[] = $levelPayment2->payment_date;
                                 }
                                 foreach($child->user_childs as $child)
                                 {
                                     if(!empty($child->id)){
-                                        $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                        $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                         if(!empty($levelPayment3)){
                                             $items3[] = $levelPayment3->payment_date;
                                         }
                                         foreach($child->user_childs as $child)
                                         {
                                             if(!empty($child->id)){
-                                                $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                                $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                                 if(!empty($levelPayment4)){
                                                     $items4[] = $levelPayment4->payment_date;
                                                 }
                                                 foreach($child->user_childs as $child)
                                                 {
                                                     if(!empty($child->id)){
-                                                        $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                                        $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                                         if(!empty($levelPayment5)){
                                                             $items5[] = $levelPayment5->payment_date;
                                                         }
@@ -528,9 +620,76 @@ class DistributorController extends Controller
         return compact('users', 'allMenus', 'items', 'items1', 'items2', 'items3', 'items4', 'items5'); 
     }
 
+    public static function getPlanUserDetails($id)
+    {
+        $users1 = User::where('parent_id', $id)->get();
+        $allMenus1 = User::pluck('fullname', 'referral_code','id', 'index')->all();
+        $items6 = array();
+        $items7 = array();
+        $items8 = array();
+        $items9 = array();
+        $items10 = array();
+        $items11 = array();
+        foreach($users1 as $user)
+        {
+            if(!empty($user->id)){
+                $levelPayment = ProductPayment::where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                if(!empty($levelPayment)){
+                    $items6[] = $levelPayment->payment_date;
+                }
+                foreach($user->user_childs as $child)
+                {
+                    if(!empty($child->id)){
+                        $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                        if(!empty($levelPayment1)){
+                            $items7[] = $levelPayment1->payment_date;
+                        }
+                        foreach($child->user_childs as $child)
+                        {
+                            if(!empty($child->id)){
+                                $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                                if(!empty($levelPayment2)){
+                                    $items8[] = $levelPayment2->payment_date;
+                                }
+                                foreach($child->user_childs as $child)
+                                {
+                                    if(!empty($child->id)){
+                                        $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                                        if(!empty($levelPayment3)){
+                                            $items9[] = $levelPayment3->payment_date;
+                                        }
+                                        foreach($child->user_childs as $child)
+                                        {
+                                            if(!empty($child->id)){
+                                                $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                                                if(!empty($levelPayment4)){
+                                                    $items10[] = $levelPayment4->payment_date;
+                                                }
+                                                foreach($child->user_childs as $child)
+                                                {
+                                                    if(!empty($child->id)){
+                                                        $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                                                        if(!empty($levelPayment5)){
+                                                            $items11[] = $levelPayment5->payment_date;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return compact('users1', 'allMenus1', 'items6', 'items7', 'items8', 'items9', 'items10', 'items11');
+    }
+
     public function salarySettlement()
     {
-        $joiners1 = User::where('parent_id', 0)->get();
+        $joiners1 = User::all();
         $settlement = Settlement::where('reason', 'Salary')->get();
         if(request()->ajax())
         {
@@ -574,15 +733,14 @@ class DistributorController extends Controller
             $settlement->prev_start_date = $startDate;
             $settlement->prev_end_date = $endDate;
             $settlement->reason = "Salary";
+            $settlement->plan = 10500;
             $settlement->save();
             foreach($users as $user)
             {
-                $salary = DB::table('user_salaries')->whereBetween('payment_date', [$startDate , $endDate])
+                $salary = DB::table('user_salaries')->where('payment_date', '<=', $endDate)
                 ->where('user_id', $user->id)->get()->sum('net_income');
-                $reward = DB::table('rewards')->whereBetween('date', [$startDate , $endDate])
-                ->where('user_id', $user->id)->where('status', 'Qualified')->get()->sum('net_income');
                 $adminwallet = DB::table('admin_payments')->where('user_id', $user->id)->first();
-                $paymentDetails = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->first();
+                $paymentDetails = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                 if(!empty($paymentDetails)){
                     $user_dt = new DateTime($paymentDetails->payment_date);
                     $user_converted_at = $user_dt->format('Y-m-d');
@@ -595,7 +753,7 @@ class DistributorController extends Controller
                 if(date("YF", strtotime($month.'-'.$year)) <= date("YF", strtotime($month1.'-'.$year1)))
                 {
                     $userwallet = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->first();
-                    $total = $salary + $reward;
+                    $total = $salary;
                     if($total > 0)
                     {
                         if(empty($userwallet))
@@ -626,7 +784,6 @@ class DistributorController extends Controller
                                         $totalAvailable = $totalDue - ($empSalary + $remain);
                                         $row = DB::table('admin_payments')->where('user_id', $user->id)->update(['usergiven' => $giveToAdmin, 'remain' => $remain]);
                                         $row1 = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->update(['extra' => $totalAvailable, 'balance' => $remain, 'adminwallet' => $empSalary]);
-        
                                     }
                                     else{
                                         $extra = $empSalary - $paidToAdmin;
@@ -666,6 +823,256 @@ class DistributorController extends Controller
         }
         else{
             return response()->json(['error' => 'Settlement is already Generated!']);
+        }
+    }
+
+    public function rewardSettlement()
+    {
+        $joiners1 = User::all();
+        $settlement = Settlement::where('reason', 'Reward')->get();
+        if(request()->ajax())
+        {
+            return datatables()->of($settlement)
+            ->addColumn('start_date', function($row){
+                return date('d-m-Y', strtotime($row->start_date));
+            })
+            ->addColumn('end_date', function($row){
+                return date('d-m-Y', strtotime($row->end_date));
+            })
+            ->addColumn('action', function($row){
+                $route = route('admin.reward-settlement.view', $row->id);
+                return '<a href="'.$route.'"><button type="button" class="btn bg-indigo waves-effect">View</button></a>';
+            })
+            ->rawColumns(['start_date', 'end_date', 'action'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+        return view('admin.payment-settlement.reward', compact('joiners1'));
+    }
+
+    public function generateRewardSettlement(Request $request)
+    {
+        $year = $request->year;
+        $start_date = $year.'-'.$request->month.'-01';
+        $end_date = date("Y-m-t", strtotime($start_date));
+        $prev_month_ts = strtotime($start_date.' -1 month');
+        $prev_month = date('m', $prev_month_ts);
+        $prev_year = date('Y', $prev_month_ts);
+        $dt = $prev_year.'-'.$prev_month;
+        $month = date('F', mktime(0,0,0,$request->month, 1, date('Y')));
+        $startDate = date("Y-m-01", strtotime($dt));
+        $endDate = date("Y-m-t", strtotime($dt));
+        if ($request->plan == 10500) {
+            $users = DB::table('users')->get();
+            $settlement = DB::table('settlements')->where('start_date', $start_date)->where('end_date', $end_date)->where('reason', 'Reward')->where('plan', 10500)->first();
+            if(empty($settlement)){
+                $settlement = new Settlement();
+                $settlement->month_year = $month." ".$year;
+                $settlement->start_date = $start_date;
+                $settlement->end_date = $end_date;
+                $settlement->prev_start_date = $startDate;
+                $settlement->prev_end_date = $endDate;
+                $settlement->reason = "Reward";
+                $settlement->plan = 10500;
+                $settlement->save();
+                foreach($users as $user)
+                {
+                    $reward = DB::table('rewards')->whereBetween('date', [$startDate , $endDate])
+                    ->where('user_id', $user->id)->where('status', 'Qualified')->where('plan', '10500')->get()->sum('net_income');
+                    $adminwallet = DB::table('admin_payments')->where('user_id', $user->id)->first();
+                    $paymentDetails = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '10500')->first();
+                    if(!empty($paymentDetails)){
+                        $user_dt = new DateTime($paymentDetails->payment_date);
+                        $user_converted_at = $user_dt->format('Y-m-d');
+                        $dt = strtotime($user_converted_at);
+                        $extendedDate = date("Y-m-d", strtotime("+15 month", $dt));
+                        $convertExtendedDate =strtotime($extendedDate);
+                        $month1=date("F",$convertExtendedDate);
+                        $year1 = date("Y", $convertExtendedDate);
+                    }
+                    if(date("YF", strtotime($month.'-'.$year)) <= date("YF", strtotime($month1.'-'.$year1)))
+                    {
+                        $userwallet = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->first();
+                        if($reward > 0)
+                        {
+                            if(empty($userwallet))
+                            {
+                                $userwallet = new UserWallet();
+                                $userwallet->settlement_id = $settlement->id;
+                                $userwallet->user_id = $user->id;
+                                $userwallet->salary = $reward;
+                                $userwallet->balance = $adminwallet->remain;
+                                $userwallet->extra = 0;
+                                $userwallet->adminwallet = 0;
+                                $userwallet->date_from = $start_date;
+                                $userwallet->date_to =  $end_date;
+                                $userwallet->reason = "Reward";
+                                $userwallet->save();
+                                if($userwallet)
+                                {
+                                    $empSalary = $userwallet->salary;
+                                    $paidToAdmin = $userwallet->balance;
+                                    $usergiven = $adminwallet->usergiven;
+                                    if($paidToAdmin > 0)
+                                    {
+                                        if($empSalary < $paidToAdmin)
+                                        {
+                                            $totalDue = $userwallet->balance;
+                                            $remain = $paidToAdmin - $empSalary;
+                                            $giveToAdmin = $usergiven + $empSalary;
+                                            $totalAvailable = $totalDue - ($empSalary + $remain);
+                                            $row = DB::table('admin_payments')->where('user_id', $user->id)->update(['usergiven' => $giveToAdmin, 'remain' => $remain]);
+                                            $row1 = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->update(['extra' => $totalAvailable, 'balance' => $remain, 'adminwallet' => $empSalary]);
+            
+                                        }
+                                        else{
+                                            $extra = $empSalary - $paidToAdmin;
+                                            $balance = $empSalary - ($paidToAdmin + $extra);
+                                            $row2 = DB::table('admin_payments')->where('user_id', $user->id)->update(['usergiven' => 7500, 'remain' => $balance]);
+                                            $row3 = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->update(['extra' => $extra, 'balance' => $balance, 'adminwallet' => $paidToAdmin]);
+                                        }
+                                    }
+                                    elseif($userwallet->balance == 0){
+                                        $row4 = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->update(['extra' => $empSalary, 'balance' => $userwallet->balance, 'adminwallet' => $userwallet->balance]);
+                                    }
+                                    $transaction = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->first();
+                                    // dd($transaction);
+                                    $adminWallet = DB::table('admin_payments')->where('user_id', $user->id)->where('usergiven', 7500)->first();
+                                    if(!empty($paymentDetails))
+                                    {
+                                        if(!empty($adminWallet))
+                                        {
+                                            if($transaction->extra > 0)
+                                            {
+                                                $payment = new PaymentSettlement();
+                                                $payment->settlement_id = $settlement->id;
+                                                $payment->user_id = $transaction->user_id;
+                                                $payment->total = $transaction->extra;
+                                                $payment->from_date = $start_date;
+                                                $payment->to_date = $end_date;
+                                                $payment->save();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return response()->json(['success' => 'Settlement is Generated!']);
+            }
+            else{
+                return response()->json(['error' => 'Settlement is already Generated!']);
+            }
+        } elseif ($request->plan == 3000) {
+            $users = DB::table('users')->get();
+            $settlement = DB::table('settlements')->where('start_date', $start_date)->where('end_date', $end_date)->where('reason', 'Reward')->where('plan', 3000)->first();
+            if(empty($settlement)){
+                $settlement = new Settlement();
+                $settlement->month_year = $month." ".$year;
+                $settlement->start_date = $start_date;
+                $settlement->end_date = $end_date;
+                $settlement->prev_start_date = $startDate;
+                $settlement->prev_end_date = $endDate;
+                $settlement->reason = "Reward";
+                $settlement->plan = 3000;
+                $settlement->save();
+                foreach($users as $user)
+                {
+                    $reward = DB::table('rewards')->whereBetween('date', [$startDate , $endDate])
+                    ->where('user_id', $user->id)->where('status', 'Qualified')->where('plan', '3000')->get()->sum('net_income');
+                    $paymentDetails = DB::table('product_payments')->where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                    if(!empty($paymentDetails)){
+                        $user_dt = new DateTime($paymentDetails->payment_date);
+                        $user_converted_at = $user_dt->format('Y-m-d');
+                        $dt = strtotime($user_converted_at);
+                        $extendedDate = date("Y-m-d", strtotime("+15 month", $dt));
+                        $convertExtendedDate =strtotime($extendedDate);
+                        $month1=date("F",$convertExtendedDate);
+                        $year1 = date("Y", $convertExtendedDate);
+                    
+                        if(date("YF", strtotime($month.'-'.$year)) <= date("YF", strtotime($month1.'-'.$year1)))
+                        {
+                            $userwallet = DB::table('user_wallets')->where('user_id', $user->id)->where('date_from',$start_date)->where('date_to', $end_date)->where('settlement_id', $settlement->id)->first();
+                            if($reward > 0)
+                            {
+                                if(empty($userwallet))
+                                {
+                                    $userwallet = new UserWallet();
+                                    $userwallet->settlement_id = $settlement->id;
+                                    $userwallet->user_id = $user->id;
+                                    $userwallet->salary = $reward;
+                                    $userwallet->balance = 0;
+                                    $userwallet->extra = $reward;
+                                    $userwallet->adminwallet = 7500;
+                                    $userwallet->date_from = $start_date;
+                                    $userwallet->date_to =  $end_date;
+                                    $userwallet->reason = "Reward";
+                                    $userwallet->save();
+                                    if($userwallet)
+                                    {
+                                        $payment = new PaymentSettlement();
+                                        $payment->settlement_id = $settlement->id;
+                                        $payment->user_id = $transaction->user_id;
+                                        $payment->total = $transaction->extra;
+                                        $payment->from_date = $start_date;
+                                        $payment->to_date = $end_date;
+                                        $payment->save();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return response()->json(['success' => 'Settlement is Generated!']);
+            }
+            else{
+                return response()->json(['error' => 'Settlement is already Generated!']);
+            }
+        }
+    }
+
+    public function viewRewardSettlement($id) 
+    {
+        $settlement = Settlement::findorfail($id);
+        $paymentSettlement = PaymentSettlement::where('settlement_id', $id)->where('settled_status', 0)->get();
+        if(request()->ajax())
+        {
+            return datatables()->of($paymentSettlement)
+            ->addColumn('name', function($row){
+                $user = User::where('id', $row->user_id)->first();
+                if(!empty($user)){
+                    return $user->fullname;
+                }
+            })
+            ->addColumn('action', function($row){
+                return '<button type="button" id="status" data-id="'.$row->id.'" class="btn bg-green waves-effect">Clear Due</button>';
+            })
+            ->rawColumns(['name', 'action'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+        return view('admin.payment-settlement.view-reward', compact('settlement'));
+    }
+
+    public function viewPaidRewardSettlement($id){
+        $settlement = Settlement::findorfail($id);
+        $paymentSettlement = PaymentSettlement::where('settlement_id', $id)->where('settled_status', 1)->get();
+        if(request()->ajax())
+        {
+            return datatables()->of($paymentSettlement)
+            ->addColumn('name', function($row){
+                $user = User::where('id', $row->user_id)->first();
+                if(!empty($user)){
+                    return $user->fullname;
+                }
+            })
+            ->addColumn('action', function($row){
+                return '<button type="button" id="status" data-id="'.$row->id.'" class="btn bg-red waves-effect">Revert Due</button>';
+            })
+            ->rawColumns(['name', 'action'])
+            ->addIndexColumn()
+            ->make(true);
         }
     }
 

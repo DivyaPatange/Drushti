@@ -573,11 +573,12 @@ class DistributorController extends Controller
     {
         $id = Auth::user()->id;
         $this->getUserLevel($id);
+        $this->getPlanUserDetails($id);
         $userIncome = UserIncome::where('user_id', $id)->get()->sum('net_income');
         $userSalary = UserSalary::where('user_id', $id)->get()->sum('net_income');
         $reward = Reward::where('user_id', $id)->where('status', 'Qualified')->get()->sum('net_income');
         $total = $userIncome + $userSalary + $reward;
-        return view('distributor.income.all', compact('userIncome', 'userSalary', 'reward', 'total'))->with($this->getUserLevel($id));
+        return view('distributor.income.all', compact('userIncome', 'userSalary', 'reward', 'total'))->with($this->getUserLevel($id))->with($this->getPlanUserDetails($id));
     }
 
     public function incomeDetails(Request $request)
@@ -664,42 +665,42 @@ class DistributorController extends Controller
         foreach($users as $user)
         {
             if(!empty($user->id)){
-                $levelPayment = ProductPayment::where('user_id', $user->id)->where('product_amount', 3000)->first();
+                $levelPayment = ProductPayment::where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                 if(!empty($levelPayment)){
                     $items[] = $levelPayment->payment_date;
                 }
                 foreach($user->user_childs as $child)
                 {
                     if(!empty($child->id)){
-                        $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                        $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                         if(!empty($levelPayment1)){
                             $items1[] = $levelPayment1->payment_date;
                         }
                         foreach($child->user_childs as $child)
                         {
                             if(!empty($child->id)){
-                                $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                 if(!empty($levelPayment2)){
                                     $items2[] = $levelPayment2->payment_date;
                                 }
                                 foreach($child->user_childs as $child)
                                 {
                                     if(!empty($child->id)){
-                                        $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                        $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                         if(!empty($levelPayment3)){
                                             $items3[] = $levelPayment3->payment_date;
                                         }
                                         foreach($child->user_childs as $child)
                                         {
                                             if(!empty($child->id)){
-                                                $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                                $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                                 if(!empty($levelPayment4)){
                                                     $items4[] = $levelPayment4->payment_date;
                                                 }
                                                 foreach($child->user_childs as $child)
                                                 {
                                                     if(!empty($child->id)){
-                                                        $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                                        $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                                         if(!empty($levelPayment5)){
                                                             $items5[] = $levelPayment5->payment_date;
                                                         }
@@ -716,6 +717,73 @@ class DistributorController extends Controller
             }
         }
         return compact('users', 'allMenus', 'items', 'items1', 'items2', 'items3', 'items4', 'items5'); 
+    }
+
+    public function getPlanUserDetails($id)
+    {
+        $users1 = User::where('parent_id', $id)->get();
+        $allMenus1 = User::pluck('fullname', 'referral_code','id', 'index')->all();
+        $items6 = array();
+        $items7 = array();
+        $items8 = array();
+        $items9 = array();
+        $items10 = array();
+        $items11 = array();
+        foreach($users1 as $user)
+        {
+            if(!empty($user->id)){
+                $levelPayment = ProductPayment::where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                if(!empty($levelPayment)){
+                    $items6[] = $levelPayment->payment_date;
+                }
+                foreach($user->user_childs as $child)
+                {
+                    if(!empty($child->id)){
+                        $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                        if(!empty($levelPayment1)){
+                            $items7[] = $levelPayment1->payment_date;
+                        }
+                        foreach($child->user_childs as $child)
+                        {
+                            if(!empty($child->id)){
+                                $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                                if(!empty($levelPayment2)){
+                                    $items8[] = $levelPayment2->payment_date;
+                                }
+                                foreach($child->user_childs as $child)
+                                {
+                                    if(!empty($child->id)){
+                                        $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                                        if(!empty($levelPayment3)){
+                                            $items9[] = $levelPayment3->payment_date;
+                                        }
+                                        foreach($child->user_childs as $child)
+                                        {
+                                            if(!empty($child->id)){
+                                                $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                                                if(!empty($levelPayment4)){
+                                                    $items10[] = $levelPayment4->payment_date;
+                                                }
+                                                foreach($child->user_childs as $child)
+                                                {
+                                                    if(!empty($child->id)){
+                                                        $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '3000')->first();
+                                                        if(!empty($levelPayment5)){
+                                                            $items11[] = $levelPayment5->payment_date;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return compact('users1', 'allMenus1', 'items6', 'items7', 'items8', 'items9', 'items10', 'items11');
     }
 
     public function rewardDetails(Request $request)

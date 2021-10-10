@@ -38,42 +38,42 @@ class HomeController extends Controller
         foreach($users as $user)
         {
             if(!empty($user->id)){
-                $levelPayment = ProductPayment::where('user_id', $user->id)->where('product_amount', 3000)->first();
+                $levelPayment = ProductPayment::where('user_id', $user->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                 if(!empty($levelPayment)){
                     $items[] = $levelPayment->payment_date;
                 }
                 foreach($user->user_childs as $child)
                 {
                     if(!empty($child->id)){
-                        $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                        $levelPayment1 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                         if(!empty($levelPayment1)){
                             $items1[] = $levelPayment1->payment_date;
                         }
                         foreach($child->user_childs as $child)
                         {
                             if(!empty($child->id)){
-                                $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                $levelPayment2 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                 if(!empty($levelPayment2)){
                                     $items2[] = $levelPayment2->payment_date;
                                 }
                                 foreach($child->user_childs as $child)
                                 {
                                     if(!empty($child->id)){
-                                        $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                        $levelPayment3 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                         if(!empty($levelPayment3)){
                                             $items3[] = $levelPayment3->payment_date;
                                         }
                                         foreach($child->user_childs as $child)
                                         {
                                             if(!empty($child->id)){
-                                                $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                                $levelPayment4 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                                 if(!empty($levelPayment4)){
                                                     $items4[] = $levelPayment4->payment_date;
                                                 }
                                                 foreach($child->user_childs as $child)
                                                 {
                                                     if(!empty($child->id)){
-                                                        $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->first();
+                                                        $levelPayment5 = ProductPayment::where('user_id', $child->id)->where('product_amount', 3000)->where('plan', '10500')->first();
                                                         if(!empty($levelPayment5)){
                                                             $items5[] = $levelPayment5->payment_date;
                                                         }
@@ -89,8 +89,8 @@ class HomeController extends Controller
                 }
             }
         }
-        $userProductPayment = ProductPayment::where('user_id', Auth::user()->id)->where('product_amount', 2500)->first();
-        $rewards = Reward::where('user_id', Auth::user()->id)->where('verified', 1)->get();
+        $userProductPayment = ProductPayment::where('user_id', Auth::user()->id)->where('product_amount', 3000)->where('plan', '10500')->first();
+        $rewards = Reward::where('user_id', Auth::user()->id)->where('plan', '10500')->where('verified', 1)->get();
         return view('distributor.dashboard', compact('users', 'allMenus', 'items', 'items1', 'items2', 'items3', 'items4', 'items5', 'userProductPayment','rewards'));
     }
 }
